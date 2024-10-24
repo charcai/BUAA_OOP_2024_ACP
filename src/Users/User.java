@@ -44,16 +44,16 @@ public abstract class User {
             default -> false;
         };
     }
-    private static boolean isAlpha(char cc) {
+    protected static boolean isAlpha(char cc) {
         if(cc >= 'a' && cc <= 'z'){
             return true;
         }
         return cc >= 'A' && cc <= 'Z';
     }
-    private static boolean isNumber(char cc) {
+    protected static boolean isNumber(char cc) {
         return cc >= '0' && cc <= '9';
     }
-    private static boolean isSign(char cc) {
+    protected static boolean isSign(char cc) {
         return switch(cc) {
             case '@', '_', '%', '$' -> true;
             default -> false;

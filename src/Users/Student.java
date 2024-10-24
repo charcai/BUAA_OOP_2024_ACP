@@ -24,13 +24,17 @@ public class Student extends User {
         int Year = Integer.parseInt(id.substring(0,2));
         int School = Integer.parseInt(id.substring(2,4));
         int Class = Integer.parseInt(id.substring(4,5));
+        int iden = Integer.parseInt(id.substring(5,8));
         if(Year < 19 || Year > 24) {
             return false;
         }
         if(School < 1 || School > 43) {
             return false;
         }
-        return Class >= 1 && Class <= 6;
+        if(Class < 1 || Class > 6) {
+            return false;
+        }
+        return iden != 0;
     }
     private static boolean idCheckMaster(String id) {
         for(int i = 2; i < 9; ++i) {
@@ -43,7 +47,7 @@ public class Student extends User {
         int Year = Integer.parseInt(id.substring(2,4));
         int School = Integer.parseInt(id.substring(4,6));
         int Class = Integer.parseInt(id.substring(6,7));
-
+        int iden = Integer.parseInt(id.substring(7,9));
         if(!type.equals("SY") && !type.equals("ZY")) {
             return false;
         }
@@ -53,7 +57,10 @@ public class Student extends User {
         if(School < 1 || School > 43) {
             return false;
         }
-        return Class >= 1 && Class <= 6;
+        if(Class < 1 || Class > 6) {
+            return false;
+        }
+        return iden != 0;
     }
     private static boolean idCheckDoctor(String id) {
         for(int i = 2; i < 9; ++i) {
@@ -66,7 +73,7 @@ public class Student extends User {
         int Year = Integer.parseInt(id.substring(2,4));
         int School = Integer.parseInt(id.substring(4,6));
         int Class = Integer.parseInt(id.substring(6,7));
-
+        int iden = Integer.parseInt(id.substring(7,9));
         if(!type.equals("BY")) {
             return false;
         }
@@ -76,6 +83,9 @@ public class Student extends User {
         if(School < 1 || School > 43) {
             return false;
         }
-        return Class >= 1 && Class <= 6;
+        if(Class < 1 || Class > 6) {
+            return false;
+        }
+        return iden != 0;
     }
 }
