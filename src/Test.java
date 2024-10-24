@@ -22,13 +22,10 @@ public class Test {
                     break;
 
                 case "register":
-                    if(op.length != 6) {
-                        System.out.println("Illegal argument count");
-                        break;
-                    }
-                    userdata.register(op);
+                    int ret = userdata.register(op);
+                    System.out.println(Const.registerCode[ret]);
                     break;
-
+//TODO: main menu
                 default:
                     System.out.println("Command '" + op[0] + "' not found");
                     break;

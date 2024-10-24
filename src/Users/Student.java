@@ -1,6 +1,9 @@
 package Users;
 
 public class Student extends User {
+    public Student(IdentityEnum identity) {
+        super(identity);
+    }
     public static boolean idCheck(String id) {
         boolean flag = false;
         int len = id.length();

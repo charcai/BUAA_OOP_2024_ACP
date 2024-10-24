@@ -1,6 +1,9 @@
 package Users;
 
 public class Teacher extends User {
+    public Teacher(IdentityEnum identity) {
+        super(identity);
+    }
     public static boolean idCheck(String id) {
         int len = id.length();
         if(len != 5) {

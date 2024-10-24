@@ -1,7 +1,21 @@
 package Users;
 
+
 public abstract class User {
-    protected String id, password, name, type;
+    public enum IdentityEnum {
+        NOT_APPOINTED, STUDENT, TEACHER, ADMINISTRATOR
+    }
+
+    protected String id, password, name;
+    IdentityEnum identity;
+    public User() {this("", "", "", IdentityEnum.NOT_APPOINTED);}
+    public User(IdentityEnum identity) {
+        this("", "", "", identity);
+    }
+    public User(String id, String name, String password, IdentityEnum identity) {
+        set(id, name, password);
+        this.identity = identity;
+    }
     public static boolean nameCheck(String nn){
         char c0 = nn.charAt(0);
         if(!isAlpha(c0)) {
@@ -38,12 +52,19 @@ public abstract class User {
         }
         return hasDigit && hasNumber && hasSign;
     }
-    public static boolean typeCheck(String t){
+    public static boolean identityCheck(String t){
         return switch(t) {
             case "Administrator", "Teacher", "Student" -> true;
             default -> false;
         };
     }
+
+    public void set(String id, String name, String password){
+        this.id = id;
+        this.name = name;
+        this.password = password;
+    }
+
     protected static boolean isAlpha(char cc) {
         if(cc >= 'a' && cc <= 'z'){
             return true;
