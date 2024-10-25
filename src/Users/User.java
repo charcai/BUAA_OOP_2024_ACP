@@ -8,7 +8,7 @@ public abstract class User {
 
     protected String id, password, name;
     IdentityEnum identity;
-    public User() {this("", "", "", IdentityEnum.NOT_APPOINTED);}
+//    public User() {this("", "", "", IdentityEnum.NOT_APPOINTED);}
     public User(IdentityEnum identity) {
         this("", "", "", identity);
     }
@@ -64,7 +64,9 @@ public abstract class User {
         this.name = name;
         this.password = password;
     }
-
+    public boolean passwordCorrect(String pass) {
+        return password.equals(pass);
+    }
     protected static boolean isAlpha(char cc) {
         if(cc >= 'a' && cc <= 'z'){
             return true;

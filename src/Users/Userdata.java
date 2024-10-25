@@ -1,15 +1,21 @@
 package Users;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 public class Userdata {
-    private final static Map<String, User> map = new HashMap<>();
+    //  Singleton
     private Userdata() {}
     private static final Userdata userdata = new Userdata();
     public static Userdata getInstance() {
         return userdata;
     }
+
+    private final static Map<String, User> map = new HashMap<>();
+    private final static List<String> online = new ArrayList<>();
+
     public int register(String[] op) {
         if(op.length != 6) {
             return 1;
@@ -31,7 +37,7 @@ public class Userdata {
         }
 
         //  check Unique
-        if(map.get(op[1]) != null) {
+        if(map.containsKey(op[1])) {
             return 3;
         }
 
@@ -57,5 +63,24 @@ public class Userdata {
         user.set(op[1], op[2], op[3]);
         map.put(op[1], user);
         return 0;
+    }
+    public String login(String[] op) {
+        if(op.length != 3) {
+            return "Illegal argument count";
+        }
+        if(!Student.idCheck(op[1]) && !Teacher.idCheck(op[1]) && !Administrator.idCheck(op[1])) {
+            return "Illegal user id";
+        }
+        if(!map.containsKey(op[1])) {
+            return "User does not exist";
+        }
+        if(online.contains(op[1])) {
+            return op[1] + " is online";
+        }
+        if(!map.get(op[1]).passwordCorrect(op[2])) {
+            return "Wrong password";
+        }
+        online.add(op[1]);
+        return "Welcome to ACP, " + op[1];
     }
 }

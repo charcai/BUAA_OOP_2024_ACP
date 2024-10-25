@@ -16,7 +16,7 @@ public class Test {
                         System.out.println("Illegal argument count");
                         break;
                     }
-                    //TODO: 顺序打印登出用户
+                    //TODO: 顺序打印登出用户信息
                     System.out.println("----- Good Bye! -----");
                     System.exit(0);
                     break;
@@ -24,6 +24,10 @@ public class Test {
                 case "register":
                     int ret = userdata.register(op);
                     System.out.println(Const.registerCode[ret]);
+                    break;
+
+                case "login":
+                    System.out.println(userdata.login(op));
                     break;
 //TODO: main menu
                 default:
