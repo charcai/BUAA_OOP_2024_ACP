@@ -15,6 +15,7 @@ public class Userdata {
 
     private final static Map<String, User> map = new HashMap<>();
     private final static List<String> online = new ArrayList<>();
+    private static String currentUser = "";
 
     public int register(String[] op) {
         if(op.length != 6) {
@@ -68,7 +69,7 @@ public class Userdata {
         if(op.length != 3) {
             return "Illegal argument count";
         }
-        if(!Student.idCheck(op[1]) && !Teacher.idCheck(op[1]) && !Administrator.idCheck(op[1])) {
+        if(!User.idCheck(op[1])) {
             return "Illegal user id";
         }
         if(!map.containsKey(op[1])) {
@@ -81,6 +82,45 @@ public class Userdata {
             return "Wrong password";
         }
         online.add(op[1]);
-        return "Welcome to ACP, " + op[1];
+        currentUser = op[1];
+        return "Welcome to ACP, " + currentUser;
+    }
+    public String logout(String[] op) {
+        switch(op.length) {
+            case 1:
+                if(currentUser.isEmpty()) {
+                    return "No one is online";
+                }
+                online.remove(currentUser);
+                String s = currentUser;
+                currentUser = "";
+                return s + " Bye~";
+
+            case 2:
+                if(currentUser.isEmpty()) {
+                    return "No one is online";
+                }
+                if(map.get(currentUser).identity != User.IdentityEnum.ADMINISTRATOR) {
+                    return "Permission denied";
+                }
+                if(!User.idCheck(op[1])) {
+                    return "Illegal user id";
+                }
+                if(!map.containsKey(op[1])) {
+                    return "User does not exist";
+                }
+                if(!online.contains(op[1])) {
+                    return op[1] + " is not online";
+                }
+                online.remove(op[1]);
+                if(currentUser.equals(op[1])) {
+                    currentUser = "";
+                }
+                return op[1] + " Bye~";
+            default:
+                return "Illegal argument count";
+        }
+
+
     }
 }

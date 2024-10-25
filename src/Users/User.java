@@ -58,6 +58,9 @@ public abstract class User {
             default -> false;
         };
     }
+    public static boolean idCheck(String nn) {
+        return Student.idCheck(nn) || Teacher.idCheck(nn) || Administrator.idCheck(nn);
+    }
 
     public void set(String id, String name, String password){
         this.id = id;

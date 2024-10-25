@@ -29,6 +29,10 @@ public class Test {
                 case "login":
                     System.out.println(userdata.login(op));
                     break;
+
+                case "logout":
+                    System.out.println(userdata.logout(op));
+                    break;
 //TODO: main menu
                 default:
                     System.out.println("Command '" + op[0] + "' not found");
