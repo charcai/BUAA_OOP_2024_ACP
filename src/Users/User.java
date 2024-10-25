@@ -2,10 +2,6 @@ package Users;
 
 
 public abstract class User {
-    public enum IdentityEnum {
-        NOT_APPOINTED, STUDENT, TEACHER, ADMINISTRATOR
-    }
-
     protected String id, password, name;
     IdentityEnum identity;
 //    public User() {this("", "", "", IdentityEnum.NOT_APPOINTED);}
@@ -70,6 +66,7 @@ public abstract class User {
     public boolean passwordCorrect(String pass) {
         return password.equals(pass);
     }
+
     protected static boolean isAlpha(char cc) {
         if(cc >= 'a' && cc <= 'z'){
             return true;

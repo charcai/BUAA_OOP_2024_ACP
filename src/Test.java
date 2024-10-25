@@ -12,18 +12,12 @@ public class Test {
             String[] op = lineIn.split("\\s+");
             switch (op[0]) {
                 case "quit":
-                    if(op.length != 1) {
-                        System.out.println("Illegal argument count");
-                        break;
-                    }
-                    //TODO: 顺序打印登出用户信息
-                    System.out.println("----- Good Bye! -----");
+                    System.out.print(userdata.quit(op));
                     System.exit(0);
                     break;
 
                 case "register":
-                    int ret = userdata.register(op);
-                    System.out.println(Const.registerCode[ret]);
+                    System.out.println(userdata.register(op));
                     break;
 
                 case "login":
@@ -32,6 +26,10 @@ public class Test {
 
                 case "logout":
                     System.out.println(userdata.logout(op));
+                    break;
+
+                case "printInfo":
+                    System.out.println(userdata.printInfo(op));
                     break;
 //TODO: main menu
                 default:

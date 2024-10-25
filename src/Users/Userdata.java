@@ -17,53 +17,63 @@ public class Userdata {
     private final static List<String> online = new ArrayList<>();
     private static String currentUser = "";
 
-    public int register(String[] op) {
+    public String quit(String[] op) {
+        if(op.length != 1) {
+            return "Illegal argument count";
+        }
+        String ret = "";
+        for(String enumOnline : online) {
+            ret = ret + enumOnline + " Bye~" + System.lineSeparator();
+        }
+        return ret + "----- Good Bye! -----";
+    }
+    public String register(String[] op) {
         if(op.length != 6) {
-            return 1;
+            return "Illegal argument count";
         }
         User user;
 
         //  check ID
         if(Student.idCheck(op[1])) {
-            user = new Student(User.IdentityEnum.STUDENT);
+            user = new Student(IdentityEnum.STUDENT);
         }
         else if(Teacher.idCheck(op[1])) {
-            user = new Teacher(User.IdentityEnum.TEACHER);
+            user = new Teacher(IdentityEnum.TEACHER);
         }
         else if(Administrator.idCheck(op[1])) {
-            user = new Administrator(User.IdentityEnum.ADMINISTRATOR);
+            user = new Administrator(IdentityEnum.ADMINISTRATOR);
         }
         else {
-            return 2;
+            return "Illegal user id";
         }
 
         //  check Unique
         if(map.containsKey(op[1])) {
-            return 3;
+            return "User id exists";
         }
 
         //  check name
         if(!User.nameCheck(op[2])) {
-            return 4;
+            return "Illegal user name";
         }
 
         //  check password
         if(!User.passwordCheck(op[3])) {
-            return 5;
+            return "Illegal password";
         }
 
         //  check password same
         if(!op[3].equals(op[4])) {
-            return 6;
+            return "Passwords do not match";
         }
 
         //  check identity
         if(!User.identityCheck(op[5])) {
-            return 7;
+            return "Illegal identity";
         }
         user.set(op[1], op[2], op[3]);
         map.put(op[1], user);
-        return 0;
+        return "Register success";
     }
     public String login(String[] op) {
         if(op.length != 3) {
@@ -100,7 +110,7 @@ public class Userdata {
                 if(currentUser.isEmpty()) {
                     return "No one is online";
                 }
-                if(map.get(currentUser).identity != User.IdentityEnum.ADMINISTRATOR) {
+                if(map.get(currentUser).identity != IdentityEnum.ADMINISTRATOR) {
                     return "Permission denied";
                 }
                 if(!User.idCheck(op[1])) {
@@ -122,5 +132,45 @@ public class Userdata {
         }
 
 
+    }
+    public String printInfo(String[] op) {
+        switch(op.length) {
+            case 1:
+                if(currentUser.isEmpty()) {
+                    return "No one is online";
+                }
+
+                return infoToString(map.get(currentUser));
+
+            case 2:
+                if(currentUser.isEmpty()) {
+                    return "No one is online";
+                }
+                User currentUserInstance = map.get(currentUser);
+
+                if(currentUserInstance.identity != IdentityEnum.ADMINISTRATOR) {
+                    return "Permission denied";
+                }
+
+                if(!User.idCheck(op[1])) {
+                    return "Illegal user id";
+                }
+
+                User targetUser = map.get(op[1]);
+                if(targetUser == null) {
+                    return "User does not exist";
+                }
+
+                return infoToString(targetUser);
+
+            default:
+                return "Illegal argument count";
+        }
+    }
+    private String infoToString(User currentUserInstance) {
+        return  "User id: " + currentUser + System.lineSeparator()
+                + "Name: " + currentUserInstance.name + System.lineSeparator()
+                + "Type: " + currentUserInstance.identity.toString() + System.lineSeparator()
+                + "Print information success";
     }
 }
