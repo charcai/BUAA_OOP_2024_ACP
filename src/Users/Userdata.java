@@ -21,9 +21,9 @@ public class Userdata {
         if(op.length != 1) {
             return "Illegal argument count";
         }
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         for(String enumOnline : online) {
-            ret = ret + enumOnline + " Bye~" + System.lineSeparator();
+            ret.append(enumOnline).append(" Bye~").append(System.lineSeparator());
         }
         return ret + "----- Good Bye! -----";
     }
@@ -79,7 +79,7 @@ public class Userdata {
         if(op.length != 3) {
             return "Illegal argument count";
         }
-        if(!User.idCheck(op[1])) {
+        if(User.idInvalid(op[1])) {
             return "Illegal user id";
         }
         if(!map.containsKey(op[1])) {
@@ -113,7 +113,7 @@ public class Userdata {
                 if(map.get(currentUser).identity != IdentityEnum.ADMINISTRATOR) {
                     return "Permission denied";
                 }
-                if(!User.idCheck(op[1])) {
+                if(User.idInvalid(op[1])) {
                     return "Illegal user id";
                 }
                 if(!map.containsKey(op[1])) {
@@ -152,7 +152,7 @@ public class Userdata {
                     return "Permission denied";
                 }
 
-                if(!User.idCheck(op[1])) {
+                if(User.idInvalid(op[1])) {
                     return "Illegal user id";
                 }
 
@@ -172,5 +172,8 @@ public class Userdata {
                 + "Name: " + currentUserInstance.name + System.lineSeparator()
                 + "Type: " + currentUserInstance.identity.toString() + System.lineSeparator()
                 + "Print information success";
+    }
+    public User getCurrentUser() {
+        return map.get(currentUser);
     }
 }

@@ -1,3 +1,4 @@
+import Courses.Coursedata;
 import Users.Userdata;
 
 import java.util.Scanner;
@@ -5,10 +6,15 @@ import java.util.Scanner;
 public class Test {
     public static void main(String[] args) {
         Userdata userdata = Userdata.getInstance();
+        Coursedata coursedata = Coursedata.getInstance();
+
         Scanner scanner = new Scanner(System.in);
         while(true) {
             String lineIn = scanner.nextLine();
             lineIn = lineIn.trim();
+            if (lineIn.isEmpty()) {
+                continue;
+            }
             String[] op = lineIn.split("\\s+");
             switch (op[0]) {
                 case "quit":
@@ -31,7 +37,11 @@ public class Test {
                 case "printInfo":
                     System.out.println(userdata.printInfo(op));
                     break;
-//TODO: main menu
+
+                case "createCourse":
+                    System.out.println(coursedata.createCourse(op));
+                    break;
+
                 default:
                     System.out.println("Command '" + op[0] + "' not found");
                     break;

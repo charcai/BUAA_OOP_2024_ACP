@@ -1,6 +1,11 @@
 package Users;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Teacher extends User {
+    public List<Integer> courses = new ArrayList<>();
+    public boolean[][] occupation = new boolean[8][15];
     public Teacher(IdentityEnum identity) {
         super(identity);
     }

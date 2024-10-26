@@ -3,7 +3,7 @@ package Users;
 
 public abstract class User {
     protected String id, password, name;
-    IdentityEnum identity;
+    public IdentityEnum identity;
 //    public User() {this("", "", "", IdentityEnum.NOT_APPOINTED);}
     public User(IdentityEnum identity) {
         this("", "", "", identity);
@@ -54,8 +54,8 @@ public abstract class User {
             default -> false;
         };
     }
-    public static boolean idCheck(String nn) {
-        return Student.idCheck(nn) || Teacher.idCheck(nn) || Administrator.idCheck(nn);
+    public static boolean idInvalid(String nn) {
+        return !(Student.idCheck(nn) || Teacher.idCheck(nn) || Administrator.idCheck(nn));
     }
 
     public void set(String id, String name, String password){
