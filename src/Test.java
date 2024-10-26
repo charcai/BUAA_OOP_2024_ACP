@@ -17,34 +17,41 @@ public class Test {
             }
             String[] op = lineIn.split("\\s+");
             switch (op[0]) {
-                case "quit":
+                case "quit": {
                     System.out.print(userdata.quit(op));
                     System.exit(0);
                     break;
+                }
 
-                case "register":
+                case "register": {
                     System.out.println(userdata.register(op));
                     break;
+                }
 
-                case "login":
+                case "login": {
                     System.out.println(userdata.login(op));
                     break;
+                }
 
-                case "logout":
+                case "logout": {
                     System.out.println(userdata.logout(op));
                     break;
+                }
 
-                case "printInfo":
+                case "printInfo": {
                     System.out.println(userdata.printInfo(op));
                     break;
+                }
 
-                case "createCourse":
+                case "createCourse": {
                     System.out.println(coursedata.createCourse(op));
                     break;
+                }
 
-                default:
+                default: {
                     System.out.println("Command '" + op[0] + "' not found");
                     break;
+                }
             }
         }
     }
