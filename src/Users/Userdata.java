@@ -199,7 +199,7 @@ public class Userdata {
     }
 
     private String infoToString(User currentUserInstance) {
-        return  "User id: " + currentUser + System.lineSeparator()
+        return  "User id: " + currentUserInstance.id + System.lineSeparator()
                 + "Name: " + currentUserInstance.name + System.lineSeparator()
                 + "Type: " + currentUserInstance.identity.toString() + System.lineSeparator()
                 + "Print information success";

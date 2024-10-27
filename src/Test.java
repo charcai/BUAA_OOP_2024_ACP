@@ -18,6 +18,10 @@ public class Test {
             String[] op = lineIn.split("\\s+");
             switch (op[0]) {
                 case "quit": {
+                    if(op.length != 1) {
+                        System.out.println("Illegal argument count");
+                        break;
+                    }
                     System.out.print(userdata.quit(op));
                     System.exit(0);
                     break;

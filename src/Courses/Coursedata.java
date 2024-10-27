@@ -64,13 +64,22 @@ public class Coursedata {
                 return "Course time conflicts";
             }
         }
-
-        double credit = Double.parseDouble(op[3]);
+        double credit;
+        try {
+            credit = Double.parseDouble(op[3]);
+        } catch(NumberFormatException e) {
+            return "Illegal course credit";
+        }
         if(credit <= 0 || credit > 12) {
             return "Illegal course credit";
         }
 
-        int hours = Integer.parseInt(op[4]);
+        int hours;
+        try {
+            hours = Integer.parseInt(op[4]);
+        } catch(NumberFormatException e) {
+            return "Illegal course period";
+        }
         if(hours <= 0 || hours > 1280) {
             return "Illegal course period";
         }
