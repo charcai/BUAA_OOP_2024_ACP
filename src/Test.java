@@ -1,4 +1,4 @@
-import Courses.Coursedata;
+import Courses.CourseData;
 import Users.Userdata;
 
 import java.util.Scanner;
@@ -6,10 +6,10 @@ import java.util.Scanner;
 public class Test {
     public static void main(String[] args) {
         Userdata userdata = Userdata.getInstance();
-        Coursedata coursedata = Coursedata.getInstance();
+        CourseData coursedata = CourseData.getInstance();
 
         Scanner scanner = new Scanner(System.in);
-        while(true) {
+        while(scanner.hasNextLine()) {
             String lineIn = scanner.nextLine();
             lineIn = lineIn.trim();
             if (lineIn.isEmpty()) {
@@ -54,5 +54,7 @@ public class Test {
                 }
             }
         }
+
+        scanner.close();
     }
 }
