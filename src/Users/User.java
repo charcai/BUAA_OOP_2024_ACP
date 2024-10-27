@@ -66,6 +66,9 @@ public abstract class User {
     public boolean passwordCorrect(String pass) {
         return password.equals(pass);
     }
+    public String getName() {
+        return name;
+    }
 
     protected static boolean isAlpha(char cc) {
         if(cc >= 'a' && cc <= 'z'){

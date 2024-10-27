@@ -16,7 +16,7 @@ public class Coursedata {
     }
 
     private final static List<Course> list = new ArrayList<>();
-    public static int courseId = 0;
+    public int courseId = 0;
 
     public Course getCourse(int id) {
         return list.get(id - 1);
@@ -84,5 +84,85 @@ public class Coursedata {
         list.add(new Course(op[1], credit, time, hours));
         teacher.courses.add(++courseId);
         return "Create course success (courseId: C-" + courseId + ")";
+    }
+    public String listCourse(String[] op) {
+        Userdata userdata = Userdata.getInstance();
+        switch(op.length) {
+            case 1: {
+                if(userdata.noOnline()) {
+                    return "No one is online";
+                }
+                User user = userdata.getCurrentUser();
+                if(user.identity == IdentityEnum.TEACHER) {
+                    if(((Teacher) user).hasCourse()) {
+                        return printCourse((Teacher) user, "") + "List course success";
+                    }
+                    else {
+                        return "Course does not exist";
+                    }
+                }
+                else {
+                    userdata.sortTeachers();
+                    boolean suc = false;
+                    StringBuilder ss = new StringBuilder();
+                    for(Teacher teacher : userdata.teachers) {
+                        if(teacher.hasCourse()) {
+                            suc = true;
+                            ss.append(printCourse(teacher, teacher.getName()));
+                        }
+                    }
+                    if(suc) {
+                        return ss + "List course success";
+                    }
+                    else {
+                        return "Course does not exist";
+                    }
+                }
+            }
+
+            case 2: {
+                if(userdata.noOnline()) {
+                    return "No one is online";
+                }
+                User user = userdata.getCurrentUser();
+                if(user.identity != IdentityEnum.ADMINISTRATOR) {
+                    return "Permission denied";
+                }
+                if(User.idInvalid(op[1])) {
+                    return "Illegal user id";
+                }
+                User targetUser = userdata.getUser(op[1]);
+                if(targetUser == null) {
+                    return "User does not exist";
+                }
+                if(targetUser.identity != IdentityEnum.TEACHER) {
+                    return "User id does not belong to a Teacher";
+                }
+                Teacher teacher = (Teacher) targetUser;
+                if(!teacher.hasCourse()) {
+                    return "Course does not exist";
+                }
+                return printCourse(teacher, teacher.getName()) + "List course success";
+            }
+
+            default: {
+                return "Illegal argument count";
+            }
+        }
+    }
+    public String printCourse(Teacher teacher, String name) {
+        if(!name.isEmpty()) {
+            name = name + " ";
+        }
+        StringBuilder ss = new StringBuilder();
+        for(int i : teacher.courses) {
+            Course currCourse = coursedata.getCourse(i);
+            if(!currCourse.cancelled) {
+                ss.append(name).append("C-").append(i).append(" ").append(currCourse.name).append(" ");
+                ss.append(currCourse.time.weekday).append('_').append(currCourse.time.beginTime).append('-').append(currCourse.time.endTime).append(" ");
+                ss.append(String.format("%.1f", currCourse.credit)).append(" ").append(currCourse.hours).append(System.lineSeparator());
+            }
+        }
+        return ss.toString();
     }
 }

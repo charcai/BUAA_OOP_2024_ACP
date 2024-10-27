@@ -1,4 +1,4 @@
-import Courses.CourseData;
+import Courses.Coursedata;
 import Users.Userdata;
 
 import java.util.Scanner;
@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Test {
     public static void main(String[] args) {
         Userdata userdata = Userdata.getInstance();
-        CourseData coursedata = CourseData.getInstance();
+        Coursedata coursedata = Coursedata.getInstance();
 
         Scanner scanner = new Scanner(System.in);
         while(scanner.hasNextLine()) {
@@ -45,6 +45,11 @@ public class Test {
 
                 case "createCourse": {
                     System.out.println(coursedata.createCourse(op));
+                    break;
+                }
+
+                case "listCourse": {
+                    System.out.println(coursedata.listCourse(op));
                     break;
                 }
 

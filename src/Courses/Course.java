@@ -1,6 +1,6 @@
 package Courses;
 
-public class Course extends courseTime{
+public class Course {
     public String name;
     public double credit;
     public int hours;

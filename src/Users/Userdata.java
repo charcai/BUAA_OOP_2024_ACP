@@ -13,9 +13,10 @@ public class Userdata {
         return userdata;
     }
 
-    private final static Map<String, User> map = new HashMap<>();
-    private final static List<String> online = new ArrayList<>();
-    private static String currentUser = "";
+    private final Map<String, User> map = new HashMap<>();
+    private final List<String> online = new ArrayList<>();
+    private String currentUser = "";
+    public final List<Teacher> teachers = new ArrayList<>();
 
     public String quit(String[] op) {
         if(op.length != 1) {
@@ -39,6 +40,7 @@ public class Userdata {
         }
         else if(Teacher.idCheck(op[1])) {
             user = new Teacher(IdentityEnum.TEACHER);
+            userdata.teachers.add((Teacher)user);
         }
         else if(Administrator.idCheck(op[1])) {
             user = new Administrator(IdentityEnum.ADMINISTRATOR);
@@ -98,7 +100,7 @@ public class Userdata {
     public String logout(String[] op) {
         switch(op.length) {
             case 1:
-                if(currentUser.isEmpty()) {
+                if(noOnline()) {
                     return "No one is online";
                 }
                 online.remove(currentUser);
@@ -107,10 +109,10 @@ public class Userdata {
                 return s + " Bye~";
 
             case 2:
-                if(currentUser.isEmpty()) {
+                if(noOnline()) {
                     return "No one is online";
                 }
-                if(map.get(currentUser).identity != IdentityEnum.ADMINISTRATOR) {
+                if(getUser(currentUser).identity != IdentityEnum.ADMINISTRATOR) {
                     return "Permission denied";
                 }
                 if(User.idInvalid(op[1])) {
@@ -140,13 +142,13 @@ public class Userdata {
                     return "No one is online";
                 }
 
-                return infoToString(map.get(currentUser));
+                return infoToString(getUser(currentUser));
 
             case 2:
                 if(currentUser.isEmpty()) {
                     return "No one is online";
                 }
-                User currentUserInstance = map.get(currentUser);
+                User currentUserInstance = getUser(currentUser);
 
                 if(currentUserInstance.identity != IdentityEnum.ADMINISTRATOR) {
                     return "Permission denied";
@@ -173,7 +175,16 @@ public class Userdata {
                 + "Type: " + currentUserInstance.identity.toString() + System.lineSeparator()
                 + "Print information success";
     }
-    public User getCurrentUser() {
-        return map.get(currentUser);
+    public User getUser(String ss) {
+        return map.get(ss);
+    }
+    public User getCurrentUser(){
+        return getUser(currentUser);
+    }
+    public boolean noOnline() {
+        return currentUser.isEmpty();
+    }
+    public void sortTeachers() {
+        teachers.sort(Teacher.nameOrder);
     }
 }
