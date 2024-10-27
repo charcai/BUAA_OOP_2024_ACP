@@ -1,11 +1,15 @@
 package Courses;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Course {
     public String name;
     public double credit;
     public int hours;
     public courseTime time;
     String teacher;
+    public List<String> students = new ArrayList<>();
     public boolean cancelled = false;
 
     public Course(String name, double credit, courseTime coursetime, int hours, String teacher) {

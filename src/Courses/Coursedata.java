@@ -1,9 +1,6 @@
 package Courses;
 
-import Users.IdentityEnum;
-import Users.Teacher;
-import Users.User;
-import Users.Userdata;
+import Users.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,5 +161,60 @@ public class Coursedata {
             }
         }
         return ss.toString();
+    }
+    public String cancelCourse(String[] op) {
+        if(op.length != 2) {
+            return "Illegal argument count";
+        }
+        if(Userdata.getInstance().noOnline()) {
+            return "No one is online";
+        }
+        if(!Course.idCheck(op[1])) {
+            return "Illegal course id";
+        }
+        int currId = Course.splitId(op[1]);
+
+        //  not registered
+        if(currId > courseId) {
+            return "Course does not exist";
+        }
+
+        Course currCourse = getCourse(currId);
+        //  cancelled
+        if(currCourse.cancelled) {
+            return "Course does not exist";
+        }
+        User curr = Userdata.getInstance().getCurrentUser();
+        switch(curr.identity) {
+            case STUDENT: {
+                Student currStudent = (Student) curr;
+                if (!currStudent.chosen.contains(currId)) {
+                    return "Course does not exist";
+                }
+                currStudent.removeOccupation(currCourse.time);
+                break;
+            }
+            case TEACHER: {
+                Teacher currTeacher = (Teacher) curr;
+                if (!currTeacher.courses.contains(currId)) {
+                    return "Course does not exist";
+                }
+                currCourse.cancelled = true;
+                currTeacher.removeOccupation(currCourse.time);
+                break;
+            }
+            case ADMINISTRATOR: {
+                currCourse.cancelled = true;
+                for(String currStu : currCourse.students) {
+                    Student currStudent = (Student) Userdata.getInstance().getUser(currStu);
+                    currStudent.removeOccupation(currCourse.time);
+                }
+                Teacher currTeacher = (Teacher) Userdata.getInstance().getUser(currCourse.teacher);
+                currTeacher.removeOccupation(currCourse.time);
+                break;
+            }
+        }
+        return "Cancel course success (courseId: C-" + currId + ")";
+
     }
 }

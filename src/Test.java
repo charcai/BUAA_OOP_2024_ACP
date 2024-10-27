@@ -57,6 +57,12 @@ public class Test {
                     System.out.println(userdata.selectCourse(op));
                     break;
                 }
+
+                case "cancelCourse": {
+                    System.out.println(coursedata.cancelCourse(op));
+                    break;
+                }
+
                 default: {
                     System.out.println("Command '" + op[0] + "' not found");
                     break;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import Courses.Coursedata;
+import Courses.courseTime;
 
 public class Teacher extends User {
     public List<Integer> courses = new ArrayList<>();
@@ -19,6 +20,11 @@ public class Teacher extends User {
             }
         }
         return false;
+    }
+    public void removeOccupation(courseTime T) {
+        for(int i = T.beginTime; i <= T.endTime; ++i) {
+            occupation[T.weekday][i] = false;
+        }
     }
     public static boolean idCheck(String id) {
         return id.matches("^(?!0{5})\\d{5}$");
