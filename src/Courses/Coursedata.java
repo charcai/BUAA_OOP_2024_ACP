@@ -81,7 +81,7 @@ public class Coursedata {
         for(int i = time.beginTime; i <= time.endTime; ++i) {
             teacher.occupation[time.weekday][i] = true;
         }
-        list.add(new Course(op[1], credit, time, hours));
+        list.add(new Course(op[1], credit, time, hours, teacher.id));
         teacher.courses.add(++courseId);
         return "Create course success (courseId: C-" + courseId + ")";
     }

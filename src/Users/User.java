@@ -2,7 +2,8 @@ package Users;
 
 
 public abstract class User {
-    protected String id, password, name;
+    protected String password, name;
+    public String id;
     public IdentityEnum identity;
 //    public User() {this("", "", "", IdentityEnum.NOT_APPOINTED);}
     public User(IdentityEnum identity) {

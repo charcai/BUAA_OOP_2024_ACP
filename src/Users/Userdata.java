@@ -1,5 +1,8 @@
 package Users;
 
+import Courses.Course;
+import Courses.Coursedata;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -169,6 +172,32 @@ public class Userdata {
                 return "Illegal argument count";
         }
     }
+    public String selectCourse(String[] op) {
+        Coursedata coursedata = Coursedata.getInstance();
+        if(op.length != 2) {
+            return "Illegal argument count";
+        }
+        if(noOnline()) {
+            return "No one is online";
+        }
+        User user = getCurrentUser();
+        if(user.identity != IdentityEnum.STUDENT) {
+            return "Permission denied";
+        }
+        if(!Course.idCheck(op[1])) {
+            return "Illegal course id";
+        }
+
+        int courseId = Course.splitId(op[1]);
+        if(courseId > coursedata.courseId) {
+            return "Course does not exist";
+        }
+        if(coursedata.getCourse(courseId).cancelled) {
+            return "Course does not exist";
+        }
+        return ((Student)user).selectCourse(courseId);
+    }
+
     private String infoToString(User currentUserInstance) {
         return  "User id: " + currentUser + System.lineSeparator()
                 + "Name: " + currentUserInstance.name + System.lineSeparator()

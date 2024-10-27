@@ -53,6 +53,10 @@ public class Test {
                     break;
                 }
 
+                case "selectCourse": {
+                    System.out.println(userdata.selectCourse(op));
+                    break;
+                }
                 default: {
                     System.out.println("Command '" + op[0] + "' not found");
                     break;
