@@ -7,1025 +7,941 @@
 
 基于 `Java` 的教务云平台(`Academic Cloud Platform`)。
 
-## 迭代1
-> 开始时间：2024-10-10 19:00:00
+## 迭代2
+> 开始时间：2024-10-24 19:00:00
 >
-> 结束时间：2024-11-01 23:59:00
+> 结束时间：2024-11-14 23:59:00
 >
-> 补交截止：2025-01-18 23:59:00
+> 补交截止：2025-01-18 19:00:00
 > 
 ### 写在前面
-同学们，从本周开始，我们将逐步开发一个教务云平台（Academic Cloud Platform）。我们会通过两次迭代，来不断完善系统功能。例如，ACP-1 阶段需要大家完成系统基本框架搭建，而 ACP-2 阶段则需要在 ACP-1 的基础上新增功能或修改已有功能。
-在开始编写代码之前，建议大家先仔细阅读需求说明和文末的HINTS，再开始编写代码，编写好的代码需要经过 patpat 评测。不作弊不抄袭，不得盗取数据点。
-1. 因为迭代一包含内容较多（迭代二会少很多），建议大家可以分两次完成，第一次完成命令1-5，第二次完成命令6-9。:laughing:
-2. 建议大家在开始编写代码之前，好好想想该如何进行组织，怎样提高代码的可复用性，这样再进行开发时，如果遇到功能相同或类似的，则可以直接复用，减少冗余的代码。冗余的代码减少了，代码的可读性、一致性和可维护性也会随之上升。:laughing:
-3. 如果你想让同学或者助教也拥有一个良好的DEBUG体验，请遵循第二条提示 :stuck_out_tongue_winking_eye:
-不要以身试法，不要抱有侥幸心理，认为自己学术不端的行为不会被发现。:punch:
+同学们，我们用了两周时间完成了 ACP 的部分功能，包括注册、创建课程、选课等。在 ACP-2 中，我们将会实现数据导入导出等一系列相关命令，同时完善教学机制，加入课表相关操作。
+
+在开始编写代码之前，建议大家先仔细阅读**需求说明**和文末的**HINTS**
+
+编写好的代码需要经过 patpat 评测。通过所有的测试点后，**需将整个项目文件打包上传到云平台**，即可完成本次实验。希望大家能够认真完成，**不作弊不抄袭，不偷取数据点**。
+
+> 不要以身试法，不要抱有侥幸心理，认为自己学术不端的行为不会被发现。:punch:
+
 ### 实验说明
 #### 一、实验目标
-1. 熟悉 Java 语法；了解 Java 项目的目录结构，了解包在Java中的使用。
-2. 区分类变量与成员变量；区分类方法（静态方法）与成员方法；认识构造方法。
-3. 学会适当封装，学习对象继承与多态的使用方式以及使用场景。
-4. 学习使用方法的重载。
-5. 学习面向对象的思想。
-同学们一定要在开发的过程中，体会并学习 面向对象的思想， 不要认为这门课是Java语法课，或是仍然用面向过程的思想进行编程！！:thinking:
+1. 熟练掌握 Java 文件操作。
+2. 了解文件输入输出流的区别与用法。
+3. 了解重定向概念。
+4. 了解 Java 序列化和反序列化技术。
+5. 了解异常的使用
 #### 二、实验的重难点
-1. 逻辑处理。实验过程中需要判断不同情况，并匹配与之相对应的处理方案，同学们需要处理好这部分的逻辑。
-2. 抽象。同学们需要将实验题目中涉及的实体、功能抽象为不同的类，不建议将大量的属性与功能塞到一个类中，不建议整个项目只有一个 Test 类。同时，建议将类型、功能相近的类归到一个包（可以认为是一个文件夹）下。
-3. 成员方法、静态方法的使用场景。
-4. 对于复杂的功能，思考如何将其拆分为合理的、相对简单的小功能，以便于实现。
-5. 对于一个方法是定义在实体类中还是工具类中，一个功能直接通过一个方法实现还是将某些代码拆分出去之类的问题，可以从类的封装性以及代码的复用性两个方面进行考虑。合理的代码结构既可以减少 bug 的产生，也方便继续迭代修改，还能够提升代码的可读性。
+1. 文件操作。
+2. 重定向。
+3. Java 异常处理。
+4. Java 序列化和反序列化技术。
 #### 三、关键技术
-- 输入与输出。
-- 列表、哈希表、集合等类的使用。
-- 集合类的排序方法。
-#### 四、相关资料
-详见文末
+##### 1. `Java.io` 包
+###### `File` 类
+- `File` 类可以表示一个文件，还可以表示一个目录（Directory）。这主要来自于UNIX的“**一切皆文件**”的设计思想。
+- `File` 类的对象**不能直接对文件进行读写操作**，只能修改文件的属性，比如文件的名称，修改日期的日期。
+- 举例如下
+```java
+import java.io.*;
+public class Test02 {
+    public static void main(String[] args) {
+        String path = "C:/windows/";  //如果路径出现问题，可以尝试使用反斜杠。此时，例子中的路径应该表示为: "C:\\windows\\"。如果仍然存在错误，也许可以尝试使用LINUX的路径格式，也即: "/c/windows/"
+        File f = new File(path, "notepad.exe"); 
+        System.out.println("============================================");
+        System.out.println("文件长度：" + f.length() + "字节");
+        System.out.println("文件或者目录：" + (f.isFile() ? "是文件" : "不是文件"));
+        System.out.println("文件或者目录：" + (f.isDirectory() ? "是目录" : "不是目录"));
+        System.out.println("最后修改日期：" + new Date(f.lastModified()));
+        System.out.println("文件名称：" + f.getName());
+        System.out.println("文件路径：" + f.getPath());
+        System.out.println("绝对路径：" + f.getAbsolutePath());
+    }
+}
+```
+###### `Stream` 流
+- 流是指一连串流动的数据信号，通过先进先出的方式接收和发送数据。
+- 数据流包括输入流和输出流，输入输出流又分为字节流和字符流。
+
+|类型|说明|用法|
+|:-:|:-:|:-:|
+|字节流|以字节为基本单位 ，无法读取中文字符|继承 `InputStream（输入字节流）`类和 `OutputStream（输出字节流）`类|
+|字符流|两个字节为基本单位，专门处理字符串和文本|继承 `Reader（读取流）`类和 `Writer（写入流）`类|
+
+欲了解更多信息，可以查看**文末的提示**。
+
+##### 2. Java 异常处理
+异常处理是 Java 中**处理运行时错误**的一种十分有效的手段，可以实现逻辑与错误处理的分离，从而更优雅地处理程序中出现的错误。异常的出现表明你的程序中出现了错误，但并不是所有的错误都是致命的，因此你可以通过捕获异常来相应地处理这些情况。
+
+> 同学们评测时出现的 RE 往往就是因为有异常没有被捕获，从而导致程序异常结束。可以试试用 `try` 和 `catch` 将 `main` 方法包裹起来，输出捕获的异常，看看到底是什么导致了 RE。
+
+> 使用Java的异常抓抛模型，在很大程度上能够减少因为`if-else`分支导致的“箭头状“缩进，而且，也能够更清晰地指出我们处理错误情况的方式，让我们的代码更加清晰。:wink:
+
+##### 3. 目录、文件和路径
+目录就是文件夹，目录中有文件，同时，目录也是一种特殊的文件。程序运行总是在一个目录下（当前目录、工作目录），一般是项目所在的目录， **当前目录可以用 `.` 指代（或者不写），当前目录的父目录可以用 `..` 指代**。
+
+“C 盘下的 User 下的 Desktop 下的 Test 下的 src 下的 com 下的 Test.java 文件”，我们就可以用这样的路径来描述它的位置：`C:/User/Desktop/Test/src/com/Test.java` （这种写法不太符合 Windows 的规范但是足够我们理解路径了）。**如果这里的 Test 就是我们项目，那么程序就运行在该目录下，则 Test.java 也可以用 `./src/com/Test.java` 表示，其中的 `./` 也可以省略。对于前者，路径从一个根位置出发，一路深入到指定位置，这种路径称为绝对路径；** 对于后者，路径从一个参考点出发，目标位置根据参考点而定，这种路径叫做**相对路径**。
+
+以下示例有助于我们理解相对路径 —— 本次迭代主要涉及的文件操作问题。假定当前位置就是项目 Test，则其他文件/目录的相对路径以“注释”的形式标注。
+```
+Desktop                 # 父目录: ..
+└── a.jpg                   # ../a.jpg
+    ├── Test                    # 当前目录: .
+    │   ├── src                     # ./src 或 src
+    │   │   ├── com                     # ./src/com 或 src/com
+    │   │   │   ├── Test.java           # ./src/com/Test.java 或 src/com/Test.java
+    │   │   │   ├── Hello.java          # ./src/com/Hello.java 或 src/com/Hello.java
+    │   │   │   └── Person.java         # ./src/com/Person.java 或 src/com/Person.java
+    │   │   └── ui                  # ./src/ui 或 src/ui
+    │   │       ├── MainWindow.java     #./src/ui/MainWindow.java 或 src/ui/MainWindow.java
+    │   │       └── Decoration.java     #./src/ui/Decoration.java 或 src/ui/Decoration.java
+    │   ├── out                     # ./out 或 out
+    │   │   ├── Test.class              # ./out/Test.class 或 out/Test.class
+    │   │   ├── Main.class              # ./out/Main.class 或 out/Main.class
+    │   │   ├── ...
+    │   └── data                    # ./data 或 data
+    │       └── a.txt                   # ./data/a.txt 或 data/a.txt
+    └── OOP                     # ../OOP
+        ├── OOP_01.pdf              # ../OOP/OOP_01.pdf
+        └── OOP_02.pptx             # ../OOP/OOP_02.pptx
+```
+
+> 如果同学们使用的是IDEA进行开发，那么**默认的`.`目录其实是项目的根目录**，在进行文件重定向操作的时候，请勿混淆！:thinking:
+
+##### 4. 序列化与反序列化
+- Java 序列化就是指把 Java 对象转换为字节序列的过程。
+- Java 反序列化就是指把字节序列恢复为 Java 对象的过程。
+
+序列化最重要的作用：在传递和保存对象时，保证对象的 **完整性和可传递性。** 对象转换为有序字节流，以便在网络上传输或者保存在本地文件中。
+
+反序列化的最重要的作用：根据字节流中保存的对象状态及描述信息，通过反序列化重建对象。
+
+总结：核心作用就是对象状态的保存和重建。（整个过程核心点就是字节流中所保存的对象状态及描述信息）。
+
+> 例如，你实例化了一个对象，名字为小明，此时这个小明对象**只在你程序运行期间存在，运行结束后就消失了**，但是你可以通过序列化，将小明对象转换为字节序列（在运行期间这个对象本质也只是一串数据）**存储到本地文件中**，**之后即可通过反序列化将这个文件中存储的字节序列转换回一个名字叫小明的对象。**
+
+1. 文件相关操作见：http://c.biancheng.net/view/1133.html
+2. 流相关操作见：https://www.runoob.com/java/java-files-io.html
+3. 异常处理：https://www.runoob.com/java/java-exceptions.html
+4. 序列化和反序列化：
+    - 理论详解：https://blog.csdn.net/weixin_45433031/article/details/115364830
+    - 实践：https://www.cnblogs.com/com-Jacob/p/16207339.html
+
 #### 五、DDL及其他说明
-- 本次实验持续3周
-- 注意输出是否有空格。一般情况下，如果没有特殊说明，每条输出均没有多余的空白符（如一条命令的开头没有空白符），同学们在复制粘贴时需要注意。
+- 本次实验**持续3周**，截止时间以云平台为准。
 
 ### 实验内容
-#### 一、题目背景
-随着教育事业和互联网技术的蓬勃发展，一款高效且便捷的教务云平台系统对于提高教学效率十分重要。这个教务云平台系统可以为师生们提供一个全面的学习与管理环境，使得他们能够方便地进行各种教学活动与学业管理。通过这个系统，教师可以高效地管理课程与学生，学生可以便捷地获取学习资源与参与各类学习活动。这款教务云平台系统的开发将进一步方便教学活动的进行，而这个任务将由你来完成！
-#### 二、命令概览
+#### 一、命令概览
 本次迭代需要你完成如下命令：
 
-| 命令符                             | 说明       |
-|---------------------------------|----------|
-| `quit`                          | 关机       |
-| `register 学工号 姓名 密码 确认密码 身份类型`  | 用户注册     |
-| `login 学工号 密码`                  |用户登录|
-| `logout 学工号`                    |用户登出|
-| `printInfo 可选参数`                |打印用户信息|
-| `createCourse 课程名称 课程时间 学分 学时`  |创建课程|
-| `listCourse 可选参数`               |查看课程|
-| `selectCourse 课程号`              |选择课程|
-| `cancelCourse 课程号`              |注销课程|
+|需求|  命令符|     说明|
+|:-:|:-:|:-:|
+|新增|  `switch`| 切换用户|
+|修改|  `selectCourse`|   选择课程|
+|新增|  `inputCourseBatch`|	批量导入课程|
+|新增|	`outputCourseBatch`|批量导出课程|
+|新增|	`listStudent`|	查看选课学生|
+|新增|	`removeStudent`|移除选课学生|
+|新增|	`listCourseSchedule`|	查看课表|
 
-#### 三、功能描述
-##### 1. 命令解析与开关机
-**实现基本的命令解析，以及系统关闭功能。**
-我们的命令以及参数**严格区分大小写**的。
-首先，你的任务是编写一个 Test 类，当程序启动时，进入main方法，等待用户输入，输入命令的基本格式为
+> 对于修改中新增的错误情况，其判断顺序位于**原有错误情况之后**，**但仍然在成功情况之前**。 :thinking:
 
-```
-命令 [参数1] [参数2] [参数3] ... [参数n]
-```
+#### 二、功能描述
+##### 1. 切换用户
+> 1. 正如迭代一中所说，为了能够更好地模拟多人共同使用系统的情形，我们的系统支持**多个不同用户同时登录**。
+> 2. 在一个用户登录之后，我们 **默认该用户为当前用户**， 也可以使用`swtich`进行用户的切换。
+> 3. 在执行`quit`后，应该 **强制登出所有的用户**, 请勿忘记。
 
-> 命令与参数、参数与参数的区分法则是：
-    1. 一行内，出现的首个**不含空格**的字符串被视为命令，之后的若干个**不含空格**的字符串被视为参数。:thinking:
-    2. 参数与命令、参数与参数之间，可能存在**多个空格**。如果“两个”参数之间没用空格，则这“两个”参数应视作一个参数。:thinking:
-    3. 命令之前，最后一个参数之后的空格数量是**任意**的。:thinking:
           
-###### 1.1 存在性分析
-- 用户的每一行输入都**视为**一条完整（不一定正确）的命令
-- 对于每一条命令，如果命令符未定义，那么请输出信息
+###### 1.1 格式说明
+|命令符|	参数|
+|:---:|:-----:|
+|`switch`|	学工号|
+###### 1.2 命令反馈说明
+1.2.1 成功切换用户
 ```
-Command '命令' not found
+Switch to 学工号
 ```
-###### 1.2 参数数量合法性分析
-- 对于每一条命令，失败时有且仅有一条错误信息输出
-- 参数的数目是不定的（`n >= 0`）
-- 如前文所述，以下命令在格式上是合法的：
-```
-command arg1 arg2	arg3     arg4
-```
->   1. 我们的参数会直接给出，不存在**命令选项**（例如`gcc main.c -o main.exe`中的 `-o`）
->   2. **存在性分析和参数数量合法性分析是优先级第一和第二的操作，任何命令的解析都必须有这两步，如果并且（如果有的话）及时反映错误。详情信息可以查看文末的提示。**
->   3. 如果你对在Java中如何获取输入，如何进行输出尚有疑问，请查看文末的提示。
 
-###### 1.3 系统退出
-当终端输入 `quit` 时，系统退出（程序退出状态为`0`），**强制所有用户下线**，按照登录的先后顺序进行下线，**先登录的先被下线**此时应该在终端中输出`logout`的结果。例如，我们强制让学工号为`22371001`和`22371002`的用户下线，则应该先输出:
-```
-22371001 Bye~
-22371002 Bye~
-```
-随后，在终端输出如下内容:
-```
------ Good Bye! -----
-```
-> 1. quit 命令也需要检查参数数量是否合法。
-> 2. 在迭代一中，并不会存在多个用户同时在线的情况。
-##### 2. 用户注册
-> 教务云平台提供三类身份：管理员、老师以及学生。在注册时，用户需要选择自己的身份。
-###### 2.1 格式说明
-|命令符|参数 1|参数 2|参数 3|参数 4|参数 5|
-|:----:|:-----:|:-----:|:-----:|:-----:|:-----:|
-|`register`|学工号|姓名|密码|确认密码|申请身份类型|
-###### 学工号
-- 学号
-    - 本科生： 学号为8位数字，从高向低数，最高两位代表入学年份，随后的两位代表学院编号，随后的一位代表大班号，最低3位代表班内编号。其中，本科生最多读6年，入学年份取值范围为[19, 24]，学院编号取值范围为[01, 43]，大班号取值为[1, 6]，最低三位没有特殊要求，取值范围为[001,999]。
-    如，22375030代表22年入学，在序号为37的学院，第五大班，班内编号为30的同学学号。
-
-	- 硕士生： 学号为9位数字，2位大写字母+7位数字。其中，`SY`开头代表学术型硕士研究生，`ZY`开头代表专业型硕士研究生，学院编号取值范围为[01, 43]，大班号取值为[1, 6]。硕士生最多读4年将被退学，所以硕士生的入学年份取值为[21,24] 。最低两位没有特殊要求，取值范围为[01,99]。
-
-	- 博士生： 学号为9位数字，2位大写字母+7位数字。其中，`BY`开头代表博士研究生，博士生最多读6年，博士生的入学年份取值为[19,24]，学院编号取值范围为[01, 43]，大班号取值为[1, 6]，最低两位没有特殊要求，取值范围为[01,99]。如，SY2221118代表硕士研究生，22年入学，21系，第1大班。
-- 教师号
-对于教师而言，工号为5位数字，没有特殊限制，取值范围为[00001,99999]。
-- 管理员号
-对于管理员而言，工号为2位字母与3位数字，字母为`AD`，数字的取值范围为[001,999]
-
-|类型|字母|1-2位数字|3-4位数字|5位数字|尾数|
-|:-----:|:---:|:-----:|:------:|:-----:|:-----:|
-|本科生|无|[19, 24]|[01, 43]|[1, 6]|[001, 999]|
-|硕士生|SY/ZY|[21, 24]|[01, 43]|[1, 6]|[01, 99]|
-|博士生|BY|[19, 24]|[01, 43]|[1, 6]|[01, 99]|
-|教职工|无|特|殊|限|制|
-|管理员|AD|仅|3|位|[001,999]|
-
-###### 姓名
-1. 由英文字母（大小写均可）和下划线两类组成，不要求两类字符至少出现一次。
-2. 第一位不能为下划线。
-3. 长度在 4-16 字符之间。
-
-###### 密码
-1. 长度为 6-16 位。
-2. 由英文字母（大小写均可）、数字和特殊字符（@，_，%，$）三类构成，每类至少有一个字符。
-          
-###### 确认密码
-- 两次输入的密码一致。
-- 只需要判断确认密码和密码是否一致，不需要再判断确认密码的合法性。也就是说，密码的合法性判断优先级更高。
-          
-###### 身份类型
-1. Administrator 管理员
-2. Teacher 老师
-3. Student 学生
-> 为了简化，我们并不会出现学工号和身份类型均合法，但是身份不匹配的问题。:thinking:
-
-###### 2.2 命令反馈说明
-1. 注册成功
-```
-Register success
-```
-2. 参数数量不合法
+1.2.2 参数不合法
 ```
 Illegal argument count
 ```
-3. 学工号不合法
-```
-Illegal user id
-```
-4. 用户已注册
-```
-User id exists
-```
-5. 姓名不合法
-```
-Illegal user name
-```
-6. 密码不合法
-```
-Illegal password
-```
-7. 确认密码与密码不一致
-```
-Passwords do not match
-```
-8. 身份类型不合法
-```
-Illegal identity
-```
-> 1. 上述的命令失败情况是按照优先级进行排序的，从上往下，优先级逐级递减。
-> 2. 注意，命令的存在性判断依旧是最高的优先级。
-> 3. 从某种意义上来说，命令执行成功的优先级最低。
-> 4. 之后的命令也遵循上述的三条规则。
 
-##### 3. 用户登录
-> 对于已注册的用户，登录平台时需要输入学工号以及密码。
->
-> 该系统不能够同时多次登录同一用户（但是可以**登录多个不同用户。迭代一中不需要考虑这种情形。**）
->
-> **登录后，默认该用户为当前用户。**
-###### 3.1 格式说明
-|命令符|参数1|参数2|
-|:---:|:---:|:---:|
-|login|学工号|密码|
-###### 3.2 命令反馈说明
-1. 登录成功
-```
-Welcome to ACP, 学工号
-```
-其中学工号为登录的用户的学工号。
-2. 参数数量不合法
-```
-Illegal argument count
-```
-3. 学工号不合法
+1.2.3 学工号不合法
 ```
 Illegal user id
 ```
-4. 用户未注册
+
+1.2.4 用户不存在
 ```
 User does not exist
 ```
-5. 用户已登录
-```
-学工号 is online
-```
-其中学工号即为欲登录的用户的学工号。
-6. 密码错误
-无论密码格式是否正确，只要与注册时的密码**不一致**，均输出
-```
-Wrong password
-```
-> 1. 我们并不存在**指使某个用户**执行某个命令的情形。:thinking:
-> 2. 需要注意的是，在我们(编写代码的各位同学)与该平台进行交互，也即输入一行行的命令的时候，**并不是作为真正的用户**,而是以一个**系统测试员**的身份去**模拟该平台的运行环境**，这也就是为什么我们的平台运行多人同时登录的原因，也是为什么会存在**当前用户**这一概念的原因。假设我们现在登录了某用户的账号，那么就默认当前用户是**被登录的用户**。所有除了`register`, `login`, `switch`以外的操作，都是以当前用户的名义发起的。在我们退出登录后，当前用户就默认为空，此时执行的任何非`register`, `login`, `switch`都是不合法的。:thinking:
-##### 4. 用户登出
-> 1. 用户进行登出的操作
-> 2. 无参数时，**当前用户**登出。
-> 3. 有参数时，**强制**学工号对应的用户登出。此举只能由 **`Administrator`** 执行， 即使学工号和当前在线用户的一致。
-###### 4.1 格式说明
-|命令符|可选参数|
-|:---:|:---:|
-|logout|[学工号]|
-> 我们的迭代不会出现“信息未保存，是否强制登出"之类的问题。
-###### 4.2 命令反馈说明
-1. 登出成功
-当系统有相应的在线用户时，输入该命令则（迫使在线用户）成功登出。
-终端输出
-```
-学工号 Bye~
-```
-例如：
-```
-22373050 Bye~
-```
-2. 参数数量不合法
-```
-Illegal argument count
-```
-3. 当前无用户在线
-```
-No one is online
-```
-> TIPS：在迭代一中只会有一个用户在线，但是在迭代二中会涉及多人同时在线的问题，这里的“当前无用户在线”意思为当前用户未登录或者已登出，而非整个系统没有用户在线
-        
-###### 有参数
-4. 权限不为 `Administrator`
-```
-Permission denied
-```
-5. 学工号不合法
-```
-Illegal user id
-```
-6. 用户不存在
-```
-User does not exist
-```
-7. 学工号对应的用户不在线
+
+1.2.5 指定用户未登录
 ```
 学工号 is not online
 ```
-##### 5. 打印信息
-> 1. 这个命令会打印使用**该平台用户的信息**。
-> 2. 建议同学们重写 Object 类（这个类会被几乎所有Java中的类**默认继承**）的 toString() 方法以完成这项功能，当然也可以通过设计专门的格式化方法。
-> 3. 无参数表示打印**当前用户的个人信息**，有参数则表示**打印他人信息**。
-> 4. 教师和学生只可打印个人信息，管理员可打印任何人信息。为了方便，有参数时，**只有管理员**能够进行打印，对于学生和老师，即使学工号是自己的，**也没有权限**进行打印。
-###### 5.1 格式说明
-|命令符|可选参数|
-|:--:|:--:|
-|printInfo|[学工号]|
-###### 5.2 命令反馈说明
-1. 成功
-输出信息应包括：学工号、姓名以及身份，并附上一行`Print information success`
-```
-User id: id
-Name: username
-Type: Administrator/Teacher/Student
-Print information success
-```
-> 冒号为英文冒号，冒号后有一个**空格**
-2. 参数数量不合法
-```
-Illegal argument count
-```
-> 1. 像这种可选参数的命令，参数数量的取值 **是一个范围**。 对于本命令，只要参数的个数在[0, 1]内，均是合法的。
-> 2. 之后类似的命令也遵循上述规定。
-3. 当前无用户在线
-```
-No one is online
-```
-###### 有参数
-4. 权限不为`Administrator`
-```
-Permission denied
-```
-5. 学工号不合法
-```
-Illegal user id
-```
-6. 用户不存在
-```
-User does not exist
-```
-##### 6. 创建课程
-> 1. **只有老师**可以创建课程，为保证教学质量，每个老师最多可注册 **10** 门课程。对于同一老师，课程名称**不可重复，创建该课程的老师即为该课程任课老师。同一个编号的课程不可能存在多个任课老师。**
-> 2. 每门课程都有一个编号，编号格式为 C-数字，且**只能如此，否则均为非法情况（主要在选择课程时进行判断）。例如 `C-1`，`C-2`，数字无前导零。**课程编号是**全局**的：从 1 开始分配，若当前系统仅有 A、B 两个老师，A老师先注册了 2 门课程，那么当B老师注册第一门课程时，其课程编号分配为 `C-3`。特别地， `C-0` 是不合法的。
-> 3. 注销课程的编号**不会再重新分配**。也就是说，你无需考虑“空闲”编号的情况。保证课程数量不会在 `Integer` 范围内溢出。
-> 4. 注意创建课程的**时间冲突问题。**
-###### 6.1 格式说明
-|命令符|参数1|参数2|参数3|参数4|
-|:---:|:---:|:---:|:---:|:---:|
-|createCourse|课程名称|课程时间|学分|学时|
+> `switch`命令 **不会更改用户的登录的顺序**。 也就是说，在最后退出的时候，只需按照 `login` 的顺序依次退出便可。:thinking:
 
-###### 课程名称
-1. 由数字、英文字母、连接符-、下划线_组成。必须**要有英文字母，其他的是可选的。**
-2. 第一位**必须为英文字母。**
-3. 长度在 1～20 个字符之间。
-4. **同一老师名下的所有课程名称不可重复，不同老师的课程名称可以重复。**
-###### 课程时间
-- 由`星期_上课时间`组成，其中星期由1-7的正整数表示，上课时间由X-Y表示（X，Y均为1-14之间的整数，此处默认一天有14节课）。注意到X必须小于等于Y。
-- 如，java课在周二的第8-9节上课，那么课程时间就表示为**2_8-9**
-- 课程时间冲突，也即在**同一天内，一门课和另一门课的上课时间存在重叠情况。**
-###### 学分
-- 学分为(0, 12]的数字（可以是整数，也可以是小数。 **输出时统一按小数处理，并保留一位小数**。 注意：不要默认小数为X.5）。在`Double`范围内，不会出现精度损失的情况。
-###### 学时
-- 学时为整数，取值范围为(0, 1280]。
-###### 6.2 命令反馈说明
-1. 创建课程成功
+##### 2. 选择课程
+###### 2.1 格式说明
+> 1. 新增课程人数要求，当一门课程选课学生人数**大于等于30**时，学生无法再选择该课程。
+> 2. 学生选择课程后课程自动加入学生课表，每个学生都有且**仅有一个课表，课表中课程需要保证时间不冲突。**
+
+###### 2.2 命令反馈说明
+2.2.1 课程容量已满
+已选课人数大于等于30人。
 ```
-Create course success (courseId: C-X)
+Course capacity is full
 ```
-其中`X`为课程编号的数字。
-2. 参数数量不合法
-如果参数数量不为4，则输出：
+
+##### 3. 批量导出课程
+> 1. 批量导出课程的命令符为 `outputCourseBatch`。
+> 2. 老师可以将当前ACP系统中的**自己的课程**都导出到**由路径指定的文件中**。
+> 3. 你必须使用**序列化的技术**进行导出。
+> 4. **文件需放在项目根目录的 `data` 路径下**。例如：若路径为 `./help.txt`，则序列化文件保存路为`./data/help.txt`；若路径为 `data/help.txt`，则序列化文件保存路径为 `./data/data/help.txt`，其中`.`代表项目的根目录路径。
+> 5. 如果文件**不存在，则创造**；如果文件**存在，则进行写覆盖操作**。
+> 6. **不需要考虑路径的合法性问题**，我们保证，此命令牵涉的路径表示的，**均是合法的.txt文件**.
+
+> 1. 为和现实情况维持一致，我们只会验证课程**最基本的信息的正确性，而基本的验证的方法是通过`inputCourseBatch`进行的。导出的课程只需要保留课程名称、时间段、学分和学时**的信息​。:thinking:
+> 2. 如果无特殊说明，我们的文件的存放位置都在项目目录`/data/`或其子目录下。:thinking:
+> 3. 关于文件的**合法性问题**，详见**文末提示**。:thinking:
+
+###### 3.1 格式说明
+
+|命令符|参数|
+|:-:|:-:|
+|`outputCourseBatch`|	路径|
+
+###### 3.2 命令反馈说明
+3.2.1 导出成功
+```
+Output course batch success
+```
+3.2.2 参数不合法
 ```
 Illegal argument count
 ```
-3. 当前无用户在线
+3.2.3 当前无用户在线
 ```
 No one is online
 ```
-4. 权限不为 `Teacher`
+3.2.4 登录用户身份不是 `Teacher`
 ```
 Permission denied
 ```
-5. 拥有课程已达最大数
+
+###### 4. 批量导入课程
+> 1. 批量导入课程的命令符为 `inputCourseBatch`。
+> 2. 老师可将由路径指定的文件中的所有课程加入到**自己的课程中**。
+> 3. 导入到一定阶段时，如果**现有课程数量已然为10**，则输出相应的错误信息。
+> 4. 如果课程数量未达上线，但是**名字或时间**冲突，则**保留老师现有的课程**。
+> 5. 新建的课程的**课程号**的分配与 `createCourse` 类似，依旧是全局分配的。
+> 6. 新建课程成功后，**需要打印相关信息**，其格式和 `createCourse` 中的类似。
+> 7. 必须使用到**反序列化**的技术进行导入。
+> 8. **文件需放在项目根目录的 `data` 路径下。**
+
+> 注意：该命令一定是`配合批量导出课程使用的，这意味着我们只会考察最基本的课程信息，因此大家不需要重新设计`自己的课程类。
+
+###### 4.1 格式说明
+
+|命令符|参数|
+|:-:|:-:|
+|`inputCourseBatch`|	路径|
+
+###### 4.2 命令反馈说明
+
+4.2.1 导入成功
+```
+Input course batch success
+```
+4.2.2 参数不合法
+```
+Illegal argument count
+```
+4.2.3 当前无用户在线
+```
+No one is online
+```
+4.2.4 权限不为 `Teacher`
+```
+Permission denied
+```
+4.2.5 文件路径对应的文件不存在
+```
+File does not exist
+```
+4.2.6 文件路径对应的文件是目录
+```
+File is a directory
+```
+4.2.7 课程数量已达上限
 ```
 Course count reaches limit
 ```
-6. 课程名称不合法
+4.2.8 课程名字已存在
 ```
-Illegal course name
+Course name already exists
 ```
-7. 课程名称已存在
-```
-Course name exists
-```
-8. 课程时间不合法
-```
-Illegal course time
-```
-9. 课程时间冲突
+4.2.9 课程时间冲突
 ```
 Course time conflicts
 ```
-10. 学分不合法
+4.2.10 导入新建课程成功
 ```
-Illegal course credit
+Create course success (courseId: C-X)
 ```
-11. 学时不合法
-```
-Illegal course period
-```
-##### 7. 查看课程
-###### 7.1 格式说明
-> 1. 教学平台的用户可以使用此命令，来查看课程。不同的身份、不同的参数，会有不同的结果。
-> 2. 无可选参数：学生和管理员查看所有课程，老师查看自己的所有课程，管理员查看所有课程。
-> 3. 有可选参数：只有管理员查看号对应老师的所有课程。为简单起见，即使是自己的工号，老师也无权查看课程。
 
-|命令符|可选参数|
-|:--:|:--:|
-|listCourse|[工号]|
-###### 7.2 命令反馈说明
-1. 成功打印信息
-每门课程占一行，之后输出一行`List course success`
-**老师**打印格式为 `课程号 课程名称 课程时间 学分 学时`，按课程编号**由小到大输出。**
+##### 5. 查看选课学生
+> 1. 仅**老师和管理员**可查看选课学生。由于课程号是唯一的，因此老师和管理员输入该命令的结果是一致的。
+> 2. 按照学工号进行**升序排序**。
+> 3. 我们认为**博士 > 学术硕士 > 专业硕士 > 本科生**
+
+###### 5.1 格式说明
+
+|命令符|参数1|
+|:-:|:-:|
+|`listStudent`|课程号|
+
+###### 5.2 命令反馈说明
+
+5.2.1 成功输出信息格式为
 ```
-# 举例
-C-1 English_1 1_1-2 2.0 32
-C-2 Al_1 2_1-2 2.0 32
-List course success
+userId1: userName1
+userId2: userName2
+...
+List student success
 ```
-**学生和管理员**打印课程时，格式为 `老师姓名 课程号 课程名称 课程时间 学分 学时`，先按老师姓名的**字典序，再按课程编号由小到大输出**。
+> 上述输出的数字1，2仅仅表示第一个学生和第二个学生，在真正进行输出的时候，并不需要某个数字来表明顺序。例如，现在有`22373009 haha`和`22373012 xixi`都选择了课程号为`C-1`的课，那么输入`listStudent C-1`的结果为：
+> 
 ```
-# 举例
-Lee C-1 Al_1 2_1-2 2.0 32
-Lee C-2 QLBL 1_1-2 2.0 32
-List course success
+22373009: haha
+22373012: xixi
+List student success
 ```
-> 管理员的有参和无参打印的格式时相同的。
-2. 参数数量不合法
+
+5.2.2 参数不合法
 ```
 Illegal argument count
 ```
-3. 当前无用户在线
+5.2.3 当前无用户在线
 ```
 No one is online
 ```
-###### 无参数
-4. 课程不存在
-对学生和管理员而言是**当前系统无课程**，对老师而言是**名下无课程**。
-```
-Course does not exist
-```
-###### 有参数
-5. 权限不为`Administrator`
+5.2.4 权限不为 `Teacher` 和 `Administrator`
 ```
 Permission denied
 ```
-6. 学工号不合法
+5.2.5 课程号不合法
+```
+Illegal course id
+```
+5.2.6 课程不存在
+
+对于管理员而言是**课程编号未注册或已注销**，对于老师而言是课程编号未注册或已注销或者该课程号**不属于老师**。
+```
+Course does not exist
+```
+5.2.7 无选课学生
+```
+Student does not select course
+```
+
+##### 6.移除学生
+> 1. 老师和管理员可以通过此命令移除某个学生。此处的”移除“是指**从课程中移除**，而不是在平台中踢出学生。
+> 2. **老师：无可选参数时，若该学生选择了老师的课程，则老师从自己所有的课程中移除该学生；有可选参数时，则将该学生从指定的且是自己的课程中移除。**
+> 3. **管理员：**无可选参数时，若该学生存在已选课程，管理员可以**从所有已选课程中移除该学生；有可选参数时，则将该学生从指定的课程中移除。**
+
+##### 6.1 格式说明
+
+|命令符|参数1|可选参数|
+|:-:|:-:|:-:|
+|`removeStudent`|	学号|[课程号]|
+
+6.2.1 移除学生成功
+```
+Remove student success
+```
+6.2.2 参数数量不合法
+```
+Illegal argument count
+```
+6.2.3 当前无用户在线
+```
+No one is online
+```
+6.2.4 登录用户身份不是 `Teacher` 或 `Administrator`
+```
+Permission denied
+```
+6.2.5 学号不合法
 ```
 Illegal user id
 ```
-7. 用户未注册
+6.2.6 学号对应的用户未注册
 ```
 User does not exist
 ```
-8. 工号对应的用户权限不为 `Teacher`
+6.2.7 学号对应的用户身份不是 Student
 ```
-User id does not belong to a Teacher
+User id does not belong to a Student
 ```
-9. 工号对应的老师名下无课程
+
+**一个参数**
+
+6.2.8 学生没有已选课程
+
+对于老师而言是学生**没有选择自己的课程**，对于管理员而言是学生**尚未选择课程**。
+```
+Student does not select course
+```
+
+**两个参数**
+
+6.2.9 课程号不合法
+```
+Illegal course id
+```
+6.2.10 课程不存在
+
+对管理员而言，课程编号**未注册或已注销**；对老师而言，课程编号未注册或已注销或者**不属于自己**。
 ```
 Course does not exist
 ```
-##### 8. 选择课程
-> 1. **只有学生**可以使用该命令，选择一门课程。
-> 2. 注意课程**时间冲突问题。**
-> 3. 迭代一的测试样例中保证学生选择的课程**不会已满。**在迭代二中，我们强行规定，每一门课的上限为**30**人。
+6.2.11 学生未选择该课程
 
-###### 8.1 格式说明
-|命令符|参数1|
+如果课程存在，但是相应的学生却**没有选择**，则依然输出错误信息。
+```
+Student does not select course
+```
+
+##### 7. 查看课表
+> 1. 仅学生可查看自己的课表（无参数），**仅管理员**可以查看学工号对应的**学生（如果是）的课表（有参数）**
+> 2. 按照课程时**间的先后顺序**进行排序。星期日期小的先被打印；星期日期相同时，上课时间更早的先被打印。
+> 3. 每个字段的输出形式，其实和`listCourse`的形式相同。
+
+###### 7.1 格式说明
+
+|命令符|可选参数|
 |:-:|:-:|
-|selectCourse|课程号|
+|`listCourseSchedule`|	[学工号]|
 
-###### 8.2 命令反馈说明
-1. 成功打印信息
+###### 7.2 命令反馈说明
+7.2.1 成功输出信息
 ```
-Select course success (courseId: C-X)
+课程时间 课程名称 课程学分 课程学时 任课老师名称
+课程时间 课程名称 课程学分 课程学时 任课老师名称
+课程时间 课程名称 课程学分 课程学时 任课老师名称
+...
+List course schedule success
 ```
-2. 参数数量不合法
+例如：
+```
+1_1-2 OO 2.0 36 Tea_a
+List course schedule success
+```
+7.2.2 参数数量不合法
 ```
 Illegal argument count
 ```
-3. 当前无用户在线
+7.2.3 当前无用户在线
 ```
 No one is online
 ```
-4. 权限不为 `Student`
+
+**无参数**
+
+7.2.4 权限不为 `Student`
 ```
 Permission denied
 ```
-5. 课程编号不合法
+7.2.5 学生尚未选课
 ```
-Illegal course id
+Student does not select course
 ```
-6. 课程不存在或已注销
-```
-Course does not exist
-```
-7. 课程时间冲突
-```
-Course time conflicts
-```
-##### 9.注销课程
-> 1. 老师和管理员可以通过这个命令，**注销某个课程。**
-> 2. 学生可以通过这个命令，**取消对某个课程的选择。**
-> 3. 老师可以注销**自己的课程。**
-> 4. 管理员可以注销**任意课程。**
-> 5. 学生选择与否，都 **不会影响（指老师和管理员进行注销时）** 注销课程的操作，但是你必须要维持学生选择的课程和现有课程之间的一致性。
-###### 9.1 格式说明
-|命令符|参数1|
-|:-:|:-:|
-|cancelCourse|课程号|
 
-> 在老师和管理员注销课程时，应该同时维护学生已选课程的**一致性。**
-###### 9.2 命令反馈说明
-1. 注销课程成功
+**有参数**
+
+7.2.6 权限不为 `Administrator`
 ```
-Cancel course success (courseId: C-X)
+Permission denied
 ```
-2. 参数数量不合法
+7.2.8 学工号不合法
 ```
-Illegal argument count
+Illegal user id
 ```
-3. 当前用户为空
+7.2.7 学工号对应的用户不存在
 ```
-No one is online
+User does not exist
 ```
-5. 课程号不合法
+7.2.8 学工号对应的用户不是学生
 ```
-Illegal course id
+User id does not belong to a Student
 ```
-6. 课程号不存在
-对管理员而言，课程编号**未注册或已注销**；对老师和学生而言，课程编号**未注册或已注销或者不属于自己（未选择）。**
+7.2.9 学生尚未选课
 ```
-Course does not exist
+Student does not select course
 ```
-#### 四、HINTS
-##### 1. 命令优先级
-首先，输入命令**未定义**时，输出命令不存在，替换下面的 `cmd` 为具体的命令名称。
-```
-Command 'cmd' not found
-```
-例如输入 `logged out`，由于命令 `logged` **未定义**（注意：这里的`out`作为参数而不是命令的一部分出现），所以输出
-```
-Command 'logged' not found
-```
-其次，当输入命令有定义但**参数个数不合法**时，输出
-```
-Illegal argument count
-```
-当命令有定义，参数个数正确时，才会进一步输出 `Already logged in`、`Bye ~` 等成功或失败信息。
-当一句命令存在多种非法情况，按上述顺序，只输出**最先发生的非法信息。**
-##### 2. 实现思路
-这里的实现思路仅供参考，具体同学们可以自行发挥。:slightly_smiling_face:
-###### 2.1 Java的输入与输出
-一般我们会采用`Scanner`类处理Java的输入问题。如果我们的输入流是`System.in`（标准输入流），那么我们会这样实例化：
+
+#### 三、HINTS
+##### 3.1 迭代中的文件合法性问题
+为了给同学们减少压力，在我们的迭代中，只有在进行文件的读取时，文件路径可能是不合法的，而不合法的理由只有两个：**文件不存在和文件是一个目录。在进行文件的输出时，给出的文件路径是一定合法的。一方面，如果路径之指定的文件不存在，则直接创造；**另外一方面，保证路径最终指向的文件为**.txt文件。**
+
+另外，我们**并不会对文件路径本身的合法性进行判断**，也即，我们给出的文件路径是符合规范的。
+
+##### 3.2 封装提示
+鉴于**文件操作**本身其实就会涉及到很多其他的概念，例如**异常处理、重定向、字符串拼接**等等，如果同学们并没有进行适当的封装，将对文件的操作零散地分布在各个类中，一旦出现错误，你就必须定位错误的原因，繁琐的DEBUG流程会让人苦不堪言。
+
+另外，当你修复好一处文件操作的BUG时，相同或者类似的文件操作多半也会存在类似的BUG，这也就代表着你需要进行更加无趣的一致性维护。
+
+因此，我们建议把所有的文件操作用**类封装起来比如判断文件的合法性、创建文件、打开文件、输出文件、删除文件夹。只要验证了一个文件操作自身逻辑的正确性，在出现BUG时，就能够很轻易地进行排查。另外，如果你想进行相应的修改，则只需要修改一处的代码便可。**
+
+##### 3.3 测试提示
+开始测试前务必**把前一次测试生成的文件删去**，建议在每次输入 `quit` 指令后，调用工具类的方法删除 `data` 文件夹。
+
+##### 3.4 流在Java中的使用示例
+实际上，Java中主要有两种流，分别是字节流和字符流。对于字节流，其最明显的特征是，输入和输出分别用 `InputStream` 和 `OutputStream` 进行表示，而对于字符流，其最明显的特征是，输入和输出分别用 `Reader` 和 `Writer` 表示。字节流和字符流的功能差距在于，**字节流的基本处理单元是单个字节，而字符流的基本处理单元是Unicode码元（大小2字节）**。 这意味着，如果你的流中含有中文，使用字符流是更保险的选择。
+
+因为字符流和字节流的使用十分相似，其各自的子类类型也比较一致，因此在此只给出字节流的使用示例，字符流的使用方式可以类推。
+
+> 1. 在每个类中的 `private String in` 和 `private String out` 分别代表的是**输入文件和输出文件**。你可以根据你自己的需要，做出相应的调整。
+> 2. 下面的代码中，使用到了异常。其中`try-with-resources`的写法，可以在出现异常后，将我们应该关闭的资源（在本例中，是各个流）**自动进行关闭**，而无需我们人为地去书写相应的`close()`语句。一来是麻烦，二来是可能忘记。
+> 3. 下面的代码中，出于简便的考虑，对于所有抛出的异常都是使用 `Exception` 进行捕获的，但这是一个**十分不好的习惯**。同学们在今后进行开发的时候，**切勿使用这样的方式！！！**
+> 4. 同学们如果想要测试以下代码的结果，可以直接进行复制到同一目录下。注意：**一定要给出相应的文件路径！！！**
 ```java
-Scanner s = new Scanner(System.in); // System.in可以被替换为其他的流
+// StreamTest.java
+public abstract class StreamTest {
+    public abstract void doStreamTest();
+}
 ```
-   一般我们使用`next()`, `nextLine()`来获取输入，并辅以`hasNext()`, `hasNextLine()`进行是否输入完成的判断。
 ```java
-import java.util.Scanner;
+// FileStreamTest.java
+import java.io.*;
+import java.util.Arrays;
 
-public class Test{
-public static void main(String[] args){
-Scanner scan = new Scanner(System.in);
-
-        // next()版
-        while(scan.hasNext()){
-            String str = scan.next();
-            System.out.println("get data: " + str);
-        }
-        
-        
-        // nextLine()版
-        while(scan.hasNextLine()){
-            String str = scan.nextLine();
-            //按照空格进行分割
-            String[] strs = str.split("\\s+");
-            for(String tstr : strs){
-                System.out.println("get data: " + tstr);
+// If you want to read or write files IN BYTE, then you can
+// use FileStream.
+public class FileStreamTest extends StreamTest {
+    private String in = "./src/in.txt";
+    private String out = "./src/out.txt";
+    public FileStreamTest(){;}
+    public FileStreamTest(String inFile, String outFile){
+        this.in =inFile;
+        this.out = outFile;
+    }
+    private void testFileStream(String inFile, String outFile){
+        byte[] bytes = new byte[100];
+//         try with resources.
+        try(FileInputStream in = new FileInputStream(inFile);
+                FileOutputStream out = new FileOutputStream(outFile);){
+            int byteRead = 0;
+            while((byteRead = in.read(bytes)) != -1){
+                System.out.println("the bytes going to be write by FileOutputStream: " + Arrays.toString(bytes));
+                out.write(bytes, 0, byteRead);
             }
-        }
-        
-        // 养成良好的编码习惯.
-        scan.close();
-    }
-}
-```
-你可以尝试使用带参数的`hasNext()`.
-输出十分简单，在我们的迭代中，`System.out.print()`或`System.out.println()`基本足够。
-> 如果你想要更方便地进行本地的测试，将输入输出**重定向到文件中**也许是个不错的选择。在迭代一中，并不会对文件的重定向做强制性要求。:stuck_out_tongue_winking_eye:
-> **绝对，绝对，绝对不要**在同一个流上，创建多个`Scanner`!!! :warning:
-###### 2.2 实体类
-以用户为例子。你可以设计一个 `User` 类（不限定类的名字，但一个好的名字是十分重要的），该类至少包括如下属性：
-- 学号/教工号
-- 姓名
-- 密码
-- 身份类型（可以通过一个字段表示，以此字段标识不同的身份）
-
-*建议将属性设置为私有属性（`private`），并为其编写相应的 `getter`/`setter`*。
-
-###### 2.3 工具类
-对于一些具有**一定通用性**或者**不依附实体对象**的方法，例如检查卡号格式、检查密码格式、判断登录状态、判断注册状态、格式化输出实体类等，可以设计一些工具类，在其中实现这些方法，一般设计为静态方法即可。你可以认为，工具类是一个存储各种工具的类，这些工具就是方法，而这些工作是随时都可以被共享的。
-> 如果某些同学提前接触过多线程编程，应该知道，有时候一个方法，一个属性，甚至一个类，都是可以被独享的。:astonished:
-###### 2.4 全局变量管理
-为了完成实验，同学们不免要设计一些全局变量。对于全局变量的管理，同学们可以设计一个类，相关的全局变量设置为 static；也可以设计一个类，而将全局变量设置为成员变量，之后通过**创建一个对象来操作全局变量。(Singleton模式）** 
-一般来说，全局变量主要用于进行 **某些数据的临时存储**， 你可以认为管理全局变量的类是一个”仓库类“。
-部分同学的大作业可能涉及到数据的持久存储。你可以使用**文件系统**或者**数据库**达成这个目的。:smiley:
-###### 2.5 正则表达式
-在判断姓名，密码是否合法时，建议大家用正则表达式来判断。例如，想要判断名字是否合法时，可以**参考**下列代码
-```java
-public boolean judgeName(String name) {
-    String name_pattern = "[A-Za-z][A-Za-z_]{3,15}";
-    if (!name.matches(name_pattern)) {
-        return false;
-    }
-    return true;
-}
-```
-正则表达式通常用于匹配字符串模式，不太适合处理范围验证，所以对于卡号的判断，可以分割字符串后再验证范围。正则表达式的更多用法，大家可以查看：[正则表达式 - 教程](https://www.runoob.com/regexp/regexp-tutorial.html)。
-###### 2.6 List、Map 等的使用
-在开发时， 合理使用`List`和`Map`加快我们的开发效率。
-对于`List` ，常用的方式如下
-```java
-public class Test {
-    public static void main(String[] args) {
-        // List<YourClass> list = new LinkedList<>(); // 这个是链表（回忆一下数据结构）
-        List<TargetClass> list = new ArrayList<>(); // 一般来说，用ArrayList<>()
-
-        list.add(targetObject); // 在列表的尾部插入数据
-        list.remove(index); // 根据下标删除元素。注意，index >= 0 && index < list.size()
-    }
-}
-```
-对于Map ，常用的方式如下
-```java
-public class Test {
-    static class Person {
-        public final String id;
-        public String name;
-
-        public Person(String id, String name) {
-            this.id = id;
-            this.name = name;
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) {
-        // Map<key, value> map = new HashMap<>();
-        // Map<Key, value> map = new TreeMap<>();
-        Map<String, Person> map = new HashMap<>();
-        Person person = new Person("1234", "xiaoming");
-
-        map.put(person.id, person);    // 向表中添加数据
-        map.containsKey(person.id);    // 判断key是否存在
-        Person p = map.get(person.id); // 根据key获取value
-        map.remove(person.id);         // 删除key对应的value
-    }
-}
-```
-更多的使用方法同学们可以查阅相关资料，这里就不展开了。`List`和`Map`还涉及到“泛型”，感兴趣的同学可以提前了解了解。实际上，在我们给出的实际中，`List<TargetClass，Map<String, Person>`的尖括号的使用，其实就对应了泛型。
-> 可以看到，在使用`List`和`Map`的时候，尖括号会传入一个类。因为Java面向对象的特性，基本数据类型（`int`,`double`,`boolean`）是不可以传入的，必须传入一个类。而每个基本数据类型都会对应一个类，例如`int`对应`Integer`，所以同学们在使用到`List`和`Map`，需要传入基本数据类型的时候，要记得把基本数据类型换为其对应的类。
-###### 2.7 集合排序
-```java
-// users 是一个 HashMap<String, User>，其键为 user id
-// getNumberUserId() 返回字符串 id 的数字部分
-List<Map.Entry<String, User>> list
-    = new ArrayList<>(users.entrySet());
-
-Collections.sort(list, new Comparator<Map.Entry<String, User>>() {
     @Override
-    public int compare(Map.Entry<String, User> u1,
-                       Map.Entry<String, User> u2)
-    {
-        // 顺序排序，如果想要逆序，u2 - u1 即可
-        return getNumberUserId(u1.getKey()) -
-                getNumberUserId(u2.getKey());
+    public void doStreamTest() {
+        System.out.println("do file stream test...");
+        testFileStream(in, out);
+        System.out.println("finish file stream test...");
     }
-});
-
-// 也可以用 lambda 表达式替换匿名类这种写法
-// comparingInt 的参数是一个函数
-// 这个函数接受一个泛型(这里是 Map.Entry<String, User>)，返回一个 int
-// 该排序就根据 List 中每个元素返回的 int 值进行，默认为顺序
-// 如果想要逆序，在返回值前添加一个负号即可
-
-list.sort(Comparator.comparingInt(o -> getNumberUserId(o.getKey())));
-```
-##### 3 面向对象中的设计思想
-这一板块将会介绍一些在进行面向对象编程时，比较好的设计思想。这部分的内容 也是**作为参考**， 同学们如果不采纳并不会造成任何负面影响（事实上，如果你只是单纯的抄袭，而没有加上自己的思考，代码会更不好编写）。此模块存在的意义，**实际上是想让同学们能够更深入地了解OOP，而不是只会编写Java代码，或者应付考试。**
-###### 3.1 封装（Encapsulation）
-在前文中，我们提到过关于实体类的设计。简单来说，实体类就是直接对应现实生活中存在的物品或者概念的类。一般而言，我们会遵循如下的方法设计一个实体类：
-```java
-public class Entity{
-    private TYPE1 attribute1;
-    private TYPE2 attribute2;
-    //...
-    public Entity(TYPE1 att1, TYPE2 att2, ...){
-        this.attribute1 = att1;
-        this.attribute2 = att2;
-        //...
-    }
-    public TYPE1 getAttribute1(){
-        return this.attribute1;
-    }
-    public void setAttribute1(TYPE1 att1){
-        this.attribute1 = att1;
-    }
-    //...
 }
 ```
-> 如果你使用的是IDEA作为IDE，那么可以按下`alt+Insert`，便可以选择自动生成各种`getter()`, `setter()`, `toString()`, `equals()`以及构造方法。
-
-为什么要这么做呢？实际上，对于一个**小项目**来说，你确实大可不必降属性封装为`private`并且设计相应的`getter()`,`setter()`，这样在一定程度上会给你的编码**带来便利**，尤其是当你设置其访问控制权限为`public`时，你可以在同项目下的任何一个文件，任何一个类中访问并使用那个属性，岂不快哉？
-
-但是，随着类的数量的增多，这样做的麻烦逐渐显现：
-1. 类与类之间无封装可言，大家都是**透明**的，可以**肆意访问并修改**各自的属性，这就会导致混乱，而且对属性的访问和修改也不是很明显（比较`a = 1` , `setA(1)`)，这会增大DEBUG难度
-2. 一般来说，我们只会提供能够完成一个方法的**最少但是必要的信息**。**例如，现在有一个方法需要知道当前有多少用户（假定有一个List用于存储用户），那么我们只需要传入这个`List`的长度，而不需要将整个`List`都传入，然后再求长度。一方面，这样可能会造成不必要的内存开销（值传递和引用传递的问题，虽然在Java中这类问题基本不存在）**，另一方面，传入`List`后，这个方法就可以**修改其内容**，这可能会导致不必要的麻烦
-3. 难以进行**合法性判断。如果在访问和修改某个属性时，需要考虑到类似于权限和值的合法性问题，**我们总是会写一个专门的合法性判断方法，甚至创造一个合法性判断类。但是这显然是没必要的，一个类的属性的合法性判断工作没有任何理由交给其他的类担任，相关的工作我们完全可以在`setter()`,`getter()`中胜任。以下给出一个很简单的例子：
 ```java
-public Exam{
-    private Integer grade;
-    public Integer getter(){
-        return this.grade;
+// DataStreamTest.java
+import java.io.*;
+
+// When you want to read or write elementary data such as Integer, Double, etc.
+// Then it is recommended to use DataStream.
+public class DataStreamTest extends StreamTest {
+    private String out = "./src/out.txt";
+    public DataStreamTest(String outFile){
+        out = outFile;
     }
-    public void setter(String person, Integer grade){
-        if(person.equals("Teacher") && grade >= 0 && grade <= 100){
-            this.grade = grade;
+    public DataStreamTest(){;}
+    private void testDataOutputStream(String outFile){
+        try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(outFile)))){
+            dos.writeBoolean(true);
+            dos.writeByte((byte)0x12);
+            dos.writeChar((char)0x34);
+            dos.writeShort(0x1234);
+            dos.writeInt(0x12345678);
+            dos.writeLong(0x123456789ABCDEFL);
+            dos.writeUTF("ABCDEFG");
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
-}
-```
-> 1. setter()方法的返回值不一定非要是`void`，你可以用返回值来表示执行的状态，发生了什么错误等。:astonished:
-> 2. 另外一个表示发生的错误类型的方法是异常（Exception）。:full_moon_with_face:
-> 3.  同学们进入大二下，学习数据管理技术后，就更能深刻地理解这样设计实体类的意义了. :smile:
-
-###### 3.2 继承（Inheritance）
-为什么要继承？简单来说，就是降低代码**重复度**，并且提供**统一的接口**。实际上，这两个功能是相互绑定的。例如：
-```java
-//Person.java
-public class Person{ //平行四边形
-    protected String name;
-    protected String getName(){
-        return "I am " + name;
+    private void testDataInputStream(String inFile){
+        try(DataInputStream in = new DataInputStream(new FileInputStream(new File(inFile)))){
+            System.out.println("what will be demonstrated are the data read by DataInputStream.");
+            System.out.printf("readBoolean():%s\n", in.readBoolean());
+            System.out.printf("readByte():0x%s\n", in.readByte());
+            System.out.printf("readChar():0x%s\n", in.readChar());
+            System.out.printf("readShort():0x%s\n", in.readShort());
+            System.out.printf("readInt():0x%s\n", Integer.toHexString(in.readInt()));
+            System.out.printf("readLong():0x%s\n", Long.toHexString(in.readLong()));
+            // If you didn't use DataOutputSteam to write a UTF,
+            // then it will throw an Exception!!
+            System.out.printf("readUTF():%s\n", in.readUTF());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
-}
-
-//Teacher.java
-public class Teacher extends Person{
     @Override
-    protected String getName(){
-        "I am " + name + ", a teacher";
-    }
-}
-
-//Student.java
-public class Student extends Person{
-;
-}
-```
-`Person`, `Teacher`, `Student`类都含有`String name`的属性，因此重复写三个`String name`是不必要的。这三个类也都具有`getName()`的方法，`Student`的和`Person`保持一致，而`Teacher`的则进行了一些改进。因为具有相同的属性名和方法名，当别人需要接手你的项目时，需要阅读并理解的方法数量变减少了，这将更有利于你们的协作。
-
-因为继承在先前的实验中也进行了详细的说明，在此就不过多赘述。
-
-###### 3.3 多态（polymorphism）
-多态是面向对象里面的大杀器。某种程度上，是否是一个优秀的面向对象编程的程序员，就在于你是否熟练掌握了多态。接下来，我们将会给出一种新的设计思路，该设计实现思路其实和设计模式中的`State`模式比较类似。**在这种方法下，我们便可以简化逻辑，让我们的程序更加模块化，减少DEBUG的难度。**
-> 1. 此处给出的样例是为了体现面向对象编程中的 设计思想， 并不推荐直接在迭代中使用。:thinking:
-> 2. 如果你想要使用，应该进行一些深入的思考。否则只会越用越乱。 :thinking:
-
-首先我们可以定义`User`类为抽象类，其有一个抽象方法`execute()`：
-```java
-public abstract class User{
-    //其他属性，此处略去
-    public abstract void execute();
-}
-```
-然后再分别定义`Administrator`, `Student`和`Teacher`类，继承`User`类并且实现`execute()`方法：
-```java
-public class Administrator extends User{
-    @Override
-    public void execute() {
-        System.out.println("I am administrator!");
-    }
-}
-
-public class Student extends User{
-    @Override
-    public void execute() {
-        System.out.println("I am student!");
-    }
-}
-
-public class Teacher extends User{
-    @Override
-    public void execute() {
-        System.out.println("I am teacher!");
+    public void doStreamTest() {
+        // usually, we use DataOutputStream with DataInputStream.
+        System.out.println("do data stream test...");
+        testDataOutputStream(out);
+        testDataInputStream(out);
+        System.out.println("finish data stream test...");
     }
 }
 ```
-这里只是做了一个简单的实现示例。在我们的场景中，execute()方法很明显 应该与命令相关， 你可以将命令作为参数传入，也可以在User类中创建一个 **命令的容器**（这个方法主要可以用来进行命令的撤回，但是我们的项目并不涉及） 作为其成员属性，在执行execute()的时候只需要从该容器中取出相应的命令便可。
-
-> 事实上，你还可以使用 **Command模式** 来解决这一类问题。另一方面，**State模式** 其实和**Strategy模式**比较类似，同学们也可以多做了解。:smile:
-
-为什么要这样实现呢？其实主要是为了防止 **硬编码（直接将具体的值，如字符串、数字、路径等，写入源代码中。你可以将这里的具体的值理解为一个函数）** 导致的难以DEBUG的问题。试想如下的代码：
 ```java
-//未使用继承版本:
-void handleCommand(){
-    User user; // user代表当前用户, user.status代表身份
-    if(user.status == "Administrator"){
-        // handle command...
-    } else if(user.status == "Student"){
-        // handle command...
-    } else if(user.stauts == "Teacher"){
-    // handle command...
-}
-}
+//BufferedStreamTest.java
+import java.io.*;
+import java.util.Arrays;
 
-//仅把继承作为提取公共属性和方法使用:
-void handleCommand(){
-    User user; //user代表当前用户
-    if(user instanceof Administrator){
-        //handle command...
-    } else if(user instanceof Student){
-        //handle command...
-    } else if(user instanceof Teacher){
-        //handle command...
+// If you want to use BUFFER to make I/O operation much more faster,
+// then you can use BufferedStream.
+public class BufferedStreamTest extends StreamTest{
+    private String in = "./src/in.txt";
+    private String out = "./src/out.txt";
+    public BufferedStreamTest(String inFile, String outFile){
+        in = inFile;
+        out = outFile;
     }
-}
-```
-一方面，如果我们有很多种`User`，每种`User`对应一个相同的命令都有不同的解析策略，如果这个策略很复杂，每个`if`块中就会有若干行代码,更可怕的是，如果这其中还有`if`分支，就会更加难以阅读。而且，当我们需要修改相应的处理方式时，很有可能因此犯错。
+    public BufferedStreamTest(){;}
+    private void testBufferedStream(String inFile, String outFile){
+        byte[] bytes = new byte[100];
+        int byteRead = 0;
+        try(
+                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(new File(inFile)));
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(outFile)));
+                ){
+            while((byteRead = bis.read(bytes, 0, bytes.length)) != -1){
+                System.out.println("the bytes going to be write by BufferedOutputStream: " + Arrays.toString(bytes));
+                bos.write(bytes, 0, byteRead);
 
->例如下面的代码 （检测平均分是否正确，并且进行学生成绩、评价和学生的配对。这并不是我们迭代的功能，只是为了示范） ：
-```java
-public class DEMO{
-    public void judge(Integer flag,String message,List<Integer> grades, > Double average, List<String> comments){
-        if(a == 1){
-            if(message.isEmpty()){
-                System.out.println("Message is empty.");
-            } else{
-                int count1 = grades.size();
-                if(count == 0){
-                    System.out.println("Grade list is empty.");
-                } else {
-                    int count2 = comments.size();
-                    if(count2 != count1){
-                        System.out.println("The number of comments > doesn't equals to the number of grades.");
-                    } else{
-                        double sum = 0;
-                        for(Integer grade : grades){
-                            sum += grade;
-                        }
-                        if(sum / count1 != average){
-                            System.out.println("The average is wrong.");
-                        } else{
-                            matchGrade(grades, comments, average); // 进行成绩和评价的匹配
-                        }
-                    }
-                }
             }
-        } else if(a == 2){
-            //...
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
-}
-```
->如果行数继续增加，**代码可读性将会大幅度下降**。即使是代码编写者，长时间不管理这部分的代码，之后也需要花费一定的时间来进行理解。
-
-很显然，没有人喜欢阅读一个**几百行的``if``嵌套版块**。
-
-但是，我们如果采取了提示的写法，那么整个逻辑就变成了：
-```java
-void handleCommand(){
-    User user;
-        user.execute();
-}
-```
-如果某一种身份（权限）处理命令是出现了BUG，我们也只是需要去到相应的实现部分对代码进行修复便可。
-
-简单来说，其实就是将具体的执行逻辑和算法放在其他的类里面（类似于**工具类**），而不是全部堆在一个类里面。
-###### 3.4 真正的State模式
-> 由于我们的迭代中，每个命令的效果其实相差不大，因而使用`State`模式其实不是很合适。
-
-进一步分析，我们发现，在`User`类里面添加的`execute()`方法似乎很奇怪，因为真正执行命令的，实际上是我们的系统，这样破坏了**封装性和模块性**
-
-另外，可以看到，其实主要影响我们执行命令的，无非就是当前用户的身份（权限）。这其实就是一个状态，而我们执行命令的方式其实就和这个状态有关，所以我们完全可以把执行命令的方法**封装在一个`State`类里面**。这样，我们还是按照先前实体类的设计方式来设计`Student`, `Teacher`, `Administrator`类，而采用一个`Executor`类来执行若干命令。同时，我们有`StuState`, `TeacherState`, `AdminState`来分别代表三种权限下的状态。
-```java
-//State.java
-public abstract class State{
-    public abstract void execute();
-}
-
-//StuState.java, TeacherState, AdminState类似
-public class StuState extends State{
     @Override
-    public void execute(){
-        System.out.println("I am a student.");
-    }
-}
-
-//Executor.java
-public class Executor{
-    private State state; //表明当前的状态
-    public void handleCommand(){
-        state.execute();
+    public void doStreamTest() {
+        System.out.println("do buffered stream test...");
+        testBufferedStream(in, out);
+        System.out.println("finish buffered stream test...");
     }
 }
 ```
-这样，根据不同的`State`，我们就可以调用不同的`execute()`函数，执行在3种权限下，对命令的解析。
-> 1. 你应该考虑`state`的切换问题。
->
-> 2. 一般地，我们会传入一个参数以表示解析执行的是哪个命令，但在上述实现中省略了这一点
->
-> 3. 细心的同学可能已经发现，`StuState`, `TeacherState`, `AdminState`可以使用`Singleton`模式（单例模式）。
+```java
+// ObjectStreamTest.java
+import java.io.*;
 
-#### 五、测试样例
-##### 命令1-5
+// If you want to read or write ANY OBJECT, then you can
+// use ObjectStream.
+public class ObjectStreamTest extends StreamTest{
+    private String out = "./src/out.txt";
+    public ObjectStreamTest(String outFile){
+        out = outFile;
+    }
+    public ObjectStreamTest(){;}
+    private void testObjectInputStream(String inFile){
+        try(
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(inFile)))
+                ){
+            Object o = (String)ois.readObject();
+            System.out.println("Object read by ObjectInputStream: " + o.toString() );
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void testObjectOutputStream(String outFile){
+        try(
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(outFile)))
+                ){
+            oos.writeObject("MuJue");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void doStreamTest() {
+        System.out.println("do object stream test...");
+        testObjectOutputStream(out);
+        testObjectInputStream(out);
+        System.out.println("finish object stream test...");
+    }
+}
+```
+```java
+/**
+ * &#064;Classname Test
+ * &#064;Description  ttt
+ * &#064;Date 2024/9/2 9:29
+ * &#064;Created MuJue
+ */
+public class Test {
+    private static void streamTest(){
+        StreamTest st = new FileStreamTest();
+        st.doStreamTest();
+        st = new DataStreamTest();
+        st.doStreamTest();
+        st = new BufferedStreamTest();
+        st.doStreamTest();
+        st = new ObjectStreamTest();
+        st.doStreamTest();
+    }
+    public static void main(String[] args){
+        streamTest();
+    }
+}
+```
+#### 四、测试样例
+##### 1-4命令
 ###### 输入
 ```
-registre
-logiin
-loggout
-ppprintInfo
-Printinfo
-register 22370000
-register 22370001
-register 22370001 _MJ
-register 22371001 Mu_Jue Aa123@ Aa123@ Student
-register 22371001 Mu_Jue Aa123@ Aa123@ Student
-register AD001 ad_min Bb123$ Bb123$ Administrator
-login 223700011
-login 22371001 Aa123@
-login 22371001 Aa123@
-printInfo
-logout 22371001
-logout
-login AD001 Bb123$
-printInfo 22371001
+register 00001 Tea_a 222Bb$ 222Bb$ Teacher
+register 00002 Tea_b 333Bb$ 333Bb$ Teacher
+register 00003 Tea_c 444Bb$ 444Bb$ Teacher
+register AD001 Admin 888ADad% 888ADad% Administrator
+login 00001 222Bb$
+login 00002 333Bb$
+login 00003 444Bb$
+login AD001 888ADad%
+createCourse OO 1_3-4 2.5 45
+createCourse CO 4_7-8 4.5 81
+createCourse AL 3_1-2 3.0 54
+listCourse
+switch 00001
+createCourse OO 1_3-4 2.5 45
+listCourse
+switch 00002
+createCourse CO 4_7-8 4.5 81
+listCourse
+switch 00003 
+createCourse AL 3_1-2 3.0 54
+listCourse
+switch AD001
+listCourse
+switch 00001
+cancelCourse C-1
+switch 00002
+cancelCourse C-2
+switch 00003
+cancelCourse C-3
+switch 00001
+createCourse AA 1_1-2 2 36
+createCourse BB 3_3-4 2 36
+createCourse CC 5_5-6 2 36
+outputCourseBatch c1.txt
+listCourse
+switch 00002
+inputCourseBatch c1.txt
+listCourse
+switch 00003
+inputCourseBatch c1.txt
+inputCourseBatch c1.txt
+listCourse
+switch AD001
+listCourse
 quit
 ```
 ###### 输出
 ```
-Command 'registre' not found
-Command 'logiin' not found
-Command 'loggout' not found
-Command 'ppprintInfo' not found
-Command 'Printinfo' not found
-Illegal argument count
-Illegal argument count
-Illegal argument count
 Register success
-User id exists
 Register success
-Illegal argument count
-Welcome to ACP, 22371001
-22371001 is online
-User id: 22371001
-Name: Mu_Jue
-Type: Student
-Print information success
-Permission denied
-22371001 Bye~
+Register success
+Register success
+Welcome to ACP, 00001
+Welcome to ACP, 00002
+Welcome to ACP, 00003
 Welcome to ACP, AD001
-User id: 22371001
-Name: Mu_Jue
-Type: Student
-Print information success
+Permission denied
+Permission denied
+Permission denied
+Course does not exist
+Switch to 00001
+Create course success (courseId: C-1)
+C-1 OO 1_3-4 2.5 45
+List course success
+Switch to 00002
+Create course success (courseId: C-2)
+C-2 CO 4_7-8 4.5 81
+List course success
+Switch to 00003
+Create course success (courseId: C-3)
+C-3 AL 3_1-2 3.0 54
+List course success
+Switch to AD001
+Tea_a C-1 OO 1_3-4 2.5 45
+Tea_b C-2 CO 4_7-8 4.5 81
+Tea_c C-3 AL 3_1-2 3.0 54
+List course success
+Switch to 00001
+Cancel course success (courseId: C-1)
+Switch to 00002
+Cancel course success (courseId: C-2)
+Switch to 00003
+Cancel course success (courseId: C-3)
+Switch to 00001
+Create course success (courseId: C-4)
+Create course success (courseId: C-5)
+Create course success (courseId: C-6)
+Output course batch success
+C-4 AA 1_1-2 2.0 36
+C-5 BB 3_3-4 2.0 36
+C-6 CC 5_5-6 2.0 36
+List course success
+Switch to 00002
+Create course success (courseId: C-7)
+Create course success (courseId: C-8)
+Create course success (courseId: C-9)
+Input course batch success
+C-7 AA 1_1-2 2.0 36
+C-8 BB 3_3-4 2.0 36
+C-9 CC 5_5-6 2.0 36
+List course success
+Switch to 00003
+Create course success (courseId: C-10)
+Create course success (courseId: C-11)
+Create course success (courseId: C-12)
+Input course batch success
+Course name already exists
+Course name already exists
+Course name already exists
+Input course batch success
+C-10 AA 1_1-2 2.0 36
+C-11 BB 3_3-4 2.0 36
+C-12 CC 5_5-6 2.0 36
+List course success
+Switch to AD001
+Tea_a C-4 AA 1_1-2 2.0 36
+Tea_a C-5 BB 3_3-4 2.0 36
+Tea_a C-6 CC 5_5-6 2.0 36
+Tea_b C-7 AA 1_1-2 2.0 36
+Tea_b C-8 BB 3_3-4 2.0 36
+Tea_b C-9 CC 5_5-6 2.0 36
+Tea_c C-10 AA 1_1-2 2.0 36
+Tea_c C-11 BB 3_3-4 2.0 36
+Tea_c C-12 CC 5_5-6 2.0 36
+List course success
+00001 Bye~
+00002 Bye~
+00003 Bye~
 AD001 Bye~
 ----- Good Bye! -----
 ```
-##### 命令6-9
+##### 5-7命令
 ###### 输入
 ```
-register 22373001 Mu_Jue Aa123@ Aa123@ Student
-register 00001 T_ea Bb123$ Bb123$ Teacher
-login 22373001 Aa123@
-createCourse OO 4_3-4 3.0 48
-logout
-login 00001 Bb123$
-createCourse 8*&&@!
-createCourse _OO 4_3-4 3.0 48
-createCourse A*XXXX 1_2-3 4.5 72
-createCourse OO 4_3-4 3.0 48
-createCourse CO 5_3-4 4.5 72
-listCourse
-logout
-login 22373001 Aa123@
-listCourse
-selectCourse C-0
-selectCourse C-2222222
+register 22373003 Hchc Aa333@ Aa333@ Student
+register 22373002 Hbhb Aa222@ Aa222@ Student
+register 22373001 Haha Aa111@ Aa111@ Student
+register 00001 Tea_a Bb111$ Bb111$ Teacher
+register 00002 Tea_b Bb222$ Bb222$ Teacher
+login 22373003 Aa333@
+login 22373002 Aa222@
+login 22373001 Aa111@
+login 00001 Bb111$
+login 00002 Bb222$
+switch 00001
+createCourse OO 1_1-2 2.5 45
+createCourse CO 3_3-4 4.5 81
+switch 00002
+createCourse OO 1_3-4 2.5 45
+createCourse CO 3_5-6 4.5 81
+switch 22373003
 selectCourse C-1
 selectCourse C-2
-logout
-login 00001 Bb123$
-cancelCourse C-0
-cancelCourse C-1
-listCourse
-logout
-login 22373001 Aa123@
-listCourse
+selectCourse C-3
+selectCourse C-4
+switch 22373002
+selectCourse C-2
+selectCourse C-4
+switch 22373001
+selectCourse C-1
+selectCourse C-3
+switch 00001
+listStudent C-1
+switch 00002
+listStudent C-4
+switch 00001
+removeStudent 22373001 C-1
+removeStudent 22373001 C-1
+switch 22373001
+listCourseSchedule
+switch 22373002
+listCourseSchedule
+switch 22373003
+listCourseSchedule
 quit
 ```
 ###### 输出
 ```
 Register success
 Register success
+Register success
+Register success
+Register success
+Welcome to ACP, 22373003
+Welcome to ACP, 22373002
 Welcome to ACP, 22373001
-Permission denied
-22373001 Bye~
 Welcome to ACP, 00001
-Illegal argument count
-Illegal course name
-Illegal course name
+Welcome to ACP, 00002
+Switch to 00001
 Create course success (courseId: C-1)
 Create course success (courseId: C-2)
-C-1 OO 4_3-4 3.0 48
-C-2 CO 5_3-4 4.5 72
-List course success
-00001 Bye~
-Welcome to ACP, 22373001
-T_ea C-1 OO 4_3-4 3.0 48
-T_ea C-2 CO 5_3-4 4.5 72
-List course success
-Illegal course id
-Course does not exist
+Switch to 00002
+Create course success (courseId: C-3)
+Create course success (courseId: C-4)
+Switch to 22373003
 Select course success (courseId: C-1)
 Select course success (courseId: C-2)
+Select course success (courseId: C-3)
+Select course success (courseId: C-4)
+Switch to 22373002
+Select course success (courseId: C-2)
+Select course success (courseId: C-4)
+Switch to 22373001
+Select course success (courseId: C-1)
+Select course success (courseId: C-3)
+Switch to 00001
+22373001: Haha
+22373003: Hchc
+List student success
+Switch to 00002
+22373002: Hbhb
+22373003: Hchc
+List student success
+Switch to 00001
+Remove student success
+Student does not select course
+Switch to 22373001
+1_3-4 OO 2.5 45 Tea_b
+List course schedule success
+Switch to 22373002
+3_3-4 CO 4.5 81 Tea_a
+3_5-6 CO 4.5 81 Tea_b
+List course schedule success
+Switch to 22373003
+1_1-2 OO 2.5 45 Tea_a
+1_3-4 OO 2.5 45 Tea_b
+3_3-4 CO 4.5 81 Tea_a
+3_5-6 CO 4.5 81 Tea_b
+List course schedule success
+22373003 Bye~
+22373002 Bye~
 22373001 Bye~
-Welcome to ACP, 00001
-Illegal course id
-Cancel course success (courseId: C-1)
-C-2 CO 5_3-4 4.5 72
-List course success
 00001 Bye~
-Welcome to ACP, 22373001
-T_ea C-2 CO 5_3-4 4.5 72
-List course success
-22373001 Bye~
+00002 Bye~
 ----- Good Bye! -----
 ```
