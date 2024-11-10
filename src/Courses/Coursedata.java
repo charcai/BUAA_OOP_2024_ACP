@@ -5,6 +5,7 @@ import Users.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Coursedata {
     private Coursedata() {}
     private static final Coursedata coursedata = new Coursedata();
@@ -225,5 +226,25 @@ public class Coursedata {
         }
         return "Cancel course success (courseId: C-" + currId + ")";
 
+    }
+
+    public String outputCourseBatch(String[] op) {
+        if(op.length != 2) {
+            return "Illegal argument count";
+        }
+        if(Userdata.getInstance().noOnline()) {
+            return "No one is online";
+        }
+        User curruser = Userdata.getInstance().getCurrentUser();
+        if(!(curruser instanceof Teacher)) {
+            return "Permission denied";
+        }
+
+        try {
+            CourseFile.outputCourseBatch(op[1], (Teacher) curruser);
+        } catch(Exception e) {
+            return e.toString();
+        }
+        return "Output course batch success";
     }
 }

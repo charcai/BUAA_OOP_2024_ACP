@@ -20,6 +20,10 @@ public class Course {
         this.teacher = teacher;
     }
 
+    public OutputCourseInfo outputInfo() {
+        return new OutputCourseInfo(name, time, credit, hours);
+    }
+
     public static boolean idCheck(String ss) {
         return ss.matches("^C-[1-9]\\d*$");
     }

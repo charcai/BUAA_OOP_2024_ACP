@@ -1,5 +1,6 @@
 /src/Testers/
 .DS_Store
+/data/
 
 # Compiled class file
 *.class

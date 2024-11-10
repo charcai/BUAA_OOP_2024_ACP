@@ -1,6 +1,6 @@
 package Courses;
 
-public class courseTime {
+public class courseTime implements java.io.Serializable {
     public int weekday, beginTime, endTime;
     public courseTime() {
         this(0, 0, 0);
