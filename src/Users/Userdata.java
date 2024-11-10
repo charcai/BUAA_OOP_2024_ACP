@@ -135,8 +135,6 @@ public class Userdata {
             default:
                 return "Illegal argument count";
         }
-
-
     }
     public String printInfo(String[] op) {
         switch(op.length) {
@@ -196,6 +194,23 @@ public class Userdata {
             return "Course does not exist";
         }
         return ((Student)user).selectCourse(courseId);
+    }
+
+    public String switchUser(String[] op) {
+        if(op.length != 2) {
+            return "Illegal argument count";
+        }
+        if(User.idInvalid(op[1])) {
+            return "Illegal user id";
+        }
+        if(!map.containsKey(op[1])) {
+            return "User does not exist";
+        }
+        if(!online.contains(op[1])) {
+            return op[1] + " is not online";
+        }
+        currentUser = op[1];
+        return "Switch to " + currentUser;
     }
 
     private String infoToString(User currentUserInstance) {
