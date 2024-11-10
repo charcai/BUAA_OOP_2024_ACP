@@ -14,6 +14,9 @@ public class Student extends User {
 
 	public String selectCourse(int id) {
 		Course course = Coursedata.getInstance().getCourse(id);
+		if(course.students.size() >= 30) {
+			return "Course capacity is full";
+		}
 		for(int i = course.time.beginTime; i <= course.time.endTime; ++i) {
 			if(occupation[course.time.weekday][i]) {
 				return "Course time conflicts";
