@@ -75,4 +75,21 @@ public class Student extends User {
 			return 1; // Undergraduate
 		}
 	}
+
+	public String listCourseSchedule() {
+		if(chosen.isEmpty()) {
+			return "Student does not select course";
+		}
+		chosen.sort(Coursedata.getInstance().scheduleOrder);
+		StringBuilder sb = new StringBuilder();
+		for(int id : chosen) {
+			Course course = Coursedata.getInstance().getCourse(id);
+			if(!course.cancelled) {
+				sb.append(course.time.exp()).append(" ").append(course.name).append(String.format(" %.1f ", course.credit));
+				sb.append(course.hours).append(" ").append(Userdata.getInstance().getName(course.teacher)).append(System.lineSeparator());
+			}
+		}
+		sb.append("List course schedule success");
+		return sb.toString();
+	}
 }

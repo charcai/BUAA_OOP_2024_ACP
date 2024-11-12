@@ -3,6 +3,7 @@ package Courses;
 import Users.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -19,7 +20,7 @@ public class Coursedata {
     public Course getCourse(int id) {
         return list.get(id - 1);
     }
-    public String createCourse(String[] op) {
+    public String createCourse(String[] op, boolean Already) {
         if(op.length != 5) {
             return "Illegal argument count";
         }
@@ -47,7 +48,7 @@ public class Coursedata {
             Course C_i = getCourse(i);
             if(!C_i.cancelled) {
                 if(C_i.name.equals(op[1])) {
-                    return "Course name exists";
+                    return Already ? "Course name already exists" : "Course name exists";
                 }
             }
         }
@@ -202,6 +203,8 @@ public class Coursedata {
                     return "Course does not exist";
                 }
                 currStudent.removeOccupation(currCourse.time);
+                currCourse.students.remove(currStudent.id);
+                currStudent.chosen.remove((Integer) currId);
                 break;
             }
             case TEACHER: {
@@ -304,4 +307,125 @@ public class Coursedata {
         ss.append("List student success");
         return ss.toString();
     }
+
+    public String removeStudent(String[] op) {
+        if(op.length < 2 || op.length > 3) {
+            return "Illegal argument count";
+        }
+
+        if(Userdata.getInstance().noOnline()) {
+            return "No one is online";
+        }
+
+        User curr = Userdata.getInstance().getCurrentUser();
+        if(curr.identity == IdentityEnum.STUDENT) {
+            return "Permission denied";
+        }
+
+        if(User.idInvalid(op[1])) {
+            return "Illegal user id";
+        }
+
+        if(Userdata.getInstance().getUser(op[1]) == null) {
+            return "User does not exist";
+        }
+
+        if(Userdata.getInstance().getUser(op[1]).identity != IdentityEnum.STUDENT) {
+            return "User id does not belong to a Student";
+        }
+
+        Student currStudent = (Student) Userdata.getInstance().getUser(op[1]);
+
+        Coursedata coursedata = Coursedata.getInstance();
+
+        switch(op.length) {
+            case 3: {
+                int id;
+                if(!op[2].matches("C-\\d+")) {
+                    return "Illegal course id";
+                }
+                try {
+                    id = Course.splitId(op[2]);
+                } catch (NumberFormatException e) {
+                    return "Illegal course id";
+                }
+                if(id - 1 > list.size()) {
+                    return "Course does not exist";
+                }
+                if(getCourse(id).cancelled) {
+                    return "Course does not exist";
+                }
+                if(curr.identity == IdentityEnum.TEACHER && !((Teacher) curr).courses.contains(id)) {
+                    return "Course does not exist";
+                }
+                if(!getCourse(id).students.contains(currStudent.id)) {
+                    return "Student does not select course";
+                }
+
+                currStudent.removeOccupation(getCourse(id).time);
+                getCourse(id).students.remove(currStudent.id);
+                currStudent.chosen.remove((Integer) id);
+                return "Remove student success";
+            }
+            case 2: {
+                switch(curr.identity) {
+                    case TEACHER: {
+                        Teacher currT = (Teacher) curr;
+                        boolean suc = false;
+                        for(int i : currT.courses) {
+                            Course c = coursedata.getCourse(i);
+                            if(c.cancelled) {
+                                continue;
+                            }
+                            if(c.students.contains(currStudent.id)) {
+                                currStudent.removeOccupation(c.time);
+                                coursedata.getCourse(i).students.remove(currStudent.id);
+                                currStudent.chosen.remove((Integer) i);
+                                suc = true;
+                            }
+                        }
+                        if(!suc) {
+                            return "Student does not select course";
+                        }
+                        return "Remove student success";
+                    }
+
+                    case ADMINISTRATOR: {
+                        boolean suc = false;
+                        for(Course c : list) {
+                            if(c.cancelled) {
+                                continue;
+                            }
+                            if(c.students.contains(currStudent.id)) {
+                                currStudent.removeOccupation(c.time);
+                                c.students.remove(currStudent.id);
+                                currStudent.chosen.remove(list.indexOf(c) + 1);
+                                suc = true;
+                            }
+                        }
+                        if(!suc) {
+                            return "Student does not select course";
+                        }
+                        return "Remove student success";
+                    }
+                }
+            }
+            default: {
+                return "No operations done during removeStudent";
+            }
+        }
+    }
+
+    public Comparator<Integer> scheduleOrder = (o1, o2) -> {
+        // First compare by weekday
+        Course c1 = getCourse(o1),
+                c2 = getCourse(o2);
+        int weekdayComparison = Integer.compare(c1.time.weekday, c2.time.weekday);
+        if (weekdayComparison != 0) {
+            return weekdayComparison;
+        }
+        // If weekdays are the same, compare by start time
+        return Integer.compare(c1.time.beginTime, c2.time.beginTime);
+    };
+
 }

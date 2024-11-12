@@ -213,6 +213,46 @@ public class Userdata {
         return "Switch to " + currentUser;
     }
 
+    public String listCourseSchedule(String[] op) {
+        if(op.length < 1 || op.length > 2) {
+            return "Illegal argument count";
+        }
+        if(noOnline()) {
+            return "No one is online";
+        }
+        User user = getCurrentUser();
+        switch(op.length) {
+            case 1: {
+                if(user.identity != IdentityEnum.STUDENT) {
+                    return "Permission denied";
+                }
+                return ((Student) user).listCourseSchedule();
+            }
+            case 2: {
+                if(user.identity != IdentityEnum.ADMINISTRATOR) {
+                    return "Permission denied";
+                }
+                if(User.idInvalid(op[1])) {
+                    return "Illegal user id";
+                }
+                if(!map.containsKey(op[1])) {
+                    return "User does not exist";
+                }
+                User currU = map.get(op[1]);
+                if(currU.identity != IdentityEnum.STUDENT) {
+                    return "User id does not belong to a Student";
+                }
+                return ((Student) currU).listCourseSchedule();
+            }
+            default: {
+                return "listCourseSelected Fail";
+            }
+        }
+    }
+
+    public String getName(String id) {
+        return map.get(id).name;
+    }
     private String infoToString(User currentUserInstance) {
         return  "User id: " + currentUserInstance.id + System.lineSeparator()
                 + "Name: " + currentUserInstance.name + System.lineSeparator()

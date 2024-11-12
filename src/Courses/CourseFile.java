@@ -47,7 +47,7 @@ public class CourseFile implements Serializable {
                     timeExp,
                     String.valueOf(info.credit),
                     String.valueOf(info.hours)
-            }) + System.lineSeparator();
+            }, true) + System.lineSeparator();
             if(!ret.contains("Create course success")) {
                 succ = false;
             }
@@ -55,6 +55,6 @@ public class CourseFile implements Serializable {
         }
 
         //  Success
-        return ss + (succ ? "Import course batch success" + System.lineSeparator() : "");
+        return ss + (succ ? "Input course batch success" + System.lineSeparator() : "");
     }
 }

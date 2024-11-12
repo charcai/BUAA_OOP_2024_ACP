@@ -21,4 +21,7 @@ public class courseTime implements java.io.Serializable {
         return ret;
     }
 
+    public String exp() {
+        return weekday + "_" + beginTime + "_" + endTime;
+    }
 }

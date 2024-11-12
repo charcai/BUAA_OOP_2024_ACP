@@ -8,7 +8,7 @@ public class Course {
     public double credit;
     public int hours;
     public courseTime time;
-    String teacher;
+    public String teacher;
     public List<String> students = new ArrayList<>();
     public boolean cancelled = false;
 

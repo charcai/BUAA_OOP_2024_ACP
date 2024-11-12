@@ -48,7 +48,7 @@ public class Test {
                 }
 
                 case "createCourse": {
-                    System.out.println(coursedata.createCourse(op));
+                    System.out.println(coursedata.createCourse(op, false));
                     break;
                 }
 
@@ -84,6 +84,16 @@ public class Test {
 
                 case "listStudent": {
                     System.out.println(coursedata.listStudent(op));
+                    break;
+                }
+
+                case "removeStudent": {
+                    System.out.println(coursedata.removeStudent(op));
+                    break;
+                }
+
+                case "listCourseSchedule": {
+                    System.out.println(userdata.listCourseSchedule(op));
                     break;
                 }
 
