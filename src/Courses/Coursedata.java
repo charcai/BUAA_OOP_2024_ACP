@@ -247,4 +247,25 @@ public class Coursedata {
         }
         return "Output course batch success";
     }
+
+    public String inputCourseBatch(String[] op) {
+        if(op.length != 2) {
+            return "Illegal argument count";
+        }
+        Userdata userdata = Userdata.getInstance();
+        if(userdata.noOnline()) {
+            return "No one is online";
+        }
+        User curruser = userdata.getCurrentUser();
+        if(!(curruser instanceof Teacher)) {
+            return "Permission denied";
+        }
+        String s = "Initialized inputCourseBatch";
+        try {
+            s = CourseFile.inputCourseBatch(op[1]);
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+        return s;
+    }
 }

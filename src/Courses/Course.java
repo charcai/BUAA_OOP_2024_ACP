@@ -20,8 +20,8 @@ public class Course {
         this.teacher = teacher;
     }
 
-    public OutputCourseInfo outputInfo() {
-        return new OutputCourseInfo(name, time, credit, hours);
+    public CourseInfo outputInfo() {
+        return new CourseInfo(name, time, credit, hours);
     }
 
     public static boolean idCheck(String ss) {

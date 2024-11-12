@@ -77,6 +77,11 @@ public class Test {
                     break;
                 }
 
+                case "inputCourseBatch": {
+                    System.out.print(coursedata.inputCourseBatch(op));
+                    break;
+                }
+
                 default: {
                     System.out.println("Command '" + op[0] + "' not found");
                     break;

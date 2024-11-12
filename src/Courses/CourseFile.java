@@ -12,7 +12,7 @@ public class CourseFile implements Serializable {
         File file = new File(path);
         file.getParentFile().mkdirs();
         Coursedata coursedata = Coursedata.getInstance();
-        List<OutputCourseInfo> teacherCourses = new ArrayList<>();
+        List<CourseInfo> teacherCourses = new ArrayList<>();
         for(int i : teacher.courses) {
             Course currCourse = coursedata.getCourse(i);
             if(!currCourse.cancelled) {
@@ -22,5 +22,39 @@ public class CourseFile implements Serializable {
         try(ObjectOutputStream OOS = new ObjectOutputStream(new FileOutputStream(file))) {
             OOS.writeObject(teacherCourses);
         }
+    }
+
+    public static String inputCourseBatch(String path) throws IOException, ClassNotFoundException{
+        path = "./data/" + path;
+        File file = new File(path);
+        if(!file.exists()) {
+            return "File does not exist";
+        }
+        if(file.isDirectory()) {
+            return "File is a directory";
+        }
+        List<CourseInfo> importCourses;
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            importCourses = (List<CourseInfo>) ois.readObject();
+        }
+        StringBuilder ss = new StringBuilder();
+        boolean succ = true;
+        for(CourseInfo info : importCourses) {
+            String timeExp = info.time.weekday + "_" + info.time.beginTime + "-" + info.time.endTime;
+            String ret = Coursedata.getInstance().createCourse(new String[]{
+                    "",
+                    info.name,
+                    timeExp,
+                    String.valueOf(info.credit),
+                    String.valueOf(info.hours)
+            }) + System.lineSeparator();
+            if(!ret.contains("Create course success")) {
+                succ = false;
+            }
+            ss.append(ret);
+        }
+
+        //  Success
+        return ss + (succ ? "Import course batch success" + System.lineSeparator() : "");
     }
 }
