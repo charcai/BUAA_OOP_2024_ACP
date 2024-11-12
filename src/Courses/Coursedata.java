@@ -186,11 +186,14 @@ public class Coursedata {
         int currId = Course.splitId(op[1]);
 
         //  not registered
-        if(currId > courseId) {
+        if(currId < 0 || currId > list.size()) {
             return "Course does not exist";
         }
 
         Course currCourse = getCourse(currId);
+        if(currCourse == null) {
+            return "Course does not exist";
+        }
         //  cancelled
         if(currCourse.cancelled) {
             return "Course does not exist";
@@ -214,6 +217,7 @@ public class Coursedata {
                 }
                 currCourse.cancelled = true;
                 currTeacher.removeOccupation(currCourse.time);
+                currTeacher.courses.remove((Integer) currId);
                 break;
             }
             case ADMINISTRATOR: {
@@ -281,7 +285,7 @@ public class Coursedata {
         }
 
         int currId = Course.splitId(op[1]);
-        if(currId > list.size() + 1) {
+        if(currId > list.size()) {
             return "Course does not exist";
         }
         if(getCourse(currId).cancelled) {
@@ -349,14 +353,14 @@ public class Coursedata {
                 } catch (NumberFormatException e) {
                     return "Illegal course id";
                 }
-                if(id - 1 > list.size()) {
-                    return "Course does not exist";
+                if(id > list.size()) {
+                    return "Course does not exist 354";
                 }
                 if(getCourse(id).cancelled) {
-                    return "Course does not exist";
+                    return "Course does not exist 357";
                 }
                 if(curr.identity == IdentityEnum.TEACHER && !((Teacher) curr).courses.contains(id)) {
-                    return "Course does not exist";
+                    return "Course does not exist 360";
                 }
                 if(!getCourse(id).students.contains(currStudent.id)) {
                     return "Student does not select course";

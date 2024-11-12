@@ -38,7 +38,7 @@ public class CourseFile implements Serializable {
             importCourses = (List<CourseInfo>) ois.readObject();
         }
         StringBuilder ss = new StringBuilder();
-        boolean succ = true;
+        boolean flag = false;
         for(CourseInfo info : importCourses) {
             String timeExp = info.time.weekday + "_" + info.time.beginTime + "-" + info.time.endTime;
             String ret = Coursedata.getInstance().createCourse(new String[]{
@@ -48,13 +48,13 @@ public class CourseFile implements Serializable {
                     String.valueOf(info.credit),
                     String.valueOf(info.hours)
             }, true) + System.lineSeparator();
-            if(!ret.contains("Create course success")) {
-                succ = false;
-            }
+            /*if(ret.contains("Create course success")) {
+                flag = true;
+            }*/
             ss.append(ret);
         }
 
         //  Success
-        return ss + (succ ? "Input course batch success" + System.lineSeparator() : "");
+        return ss + /*(flag ? "Input course batch success" : "") */"Input course batch success" + System.lineSeparator();
     }
 }

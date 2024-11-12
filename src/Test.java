@@ -38,62 +38,110 @@ public class Test {
                 }
 
                 case "logout": {
-                    System.out.println(userdata.logout(op));
+                    try {
+                        System.out.println(userdata.logout(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: logout" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "printInfo": {
-                    System.out.println(userdata.printInfo(op));
+                    try {
+                        System.out.println(userdata.printInfo(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: printInfo" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "createCourse": {
-                    System.out.println(coursedata.createCourse(op, false));
+                    try {
+                        System.out.println(coursedata.createCourse(op, true));
+                    } catch (Exception e) {
+                        System.out.println("Error: createCourse" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "listCourse": {
-                    System.out.println(coursedata.listCourse(op));
+                    try {
+                        System.out.println(coursedata.listCourse(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: listCourse" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "selectCourse": {
-                    System.out.println(userdata.selectCourse(op));
+                    try {
+                        System.out.println(userdata.selectCourse(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: selectCourse" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "cancelCourse": {
-                    System.out.println(coursedata.cancelCourse(op));
+                    try {
+                        System.out.println(coursedata.cancelCourse(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: cancelCourse" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "switch": {
-                    System.out.println(userdata.switchUser(op));
+                    try {
+                        System.out.println(userdata.switchUser(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: switch" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "outputCourseBatch": {
-                    System.out.println(coursedata.outputCourseBatch(op));
+                    try {
+                        System.out.println(coursedata.outputCourseBatch(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: outputCourseBatch" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "inputCourseBatch": {
-                    System.out.print(coursedata.inputCourseBatch(op));
+                    try {
+                        System.out.println(coursedata.inputCourseBatch(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: inputCourseBatch" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "listStudent": {
-                    System.out.println(coursedata.listStudent(op));
+                    try {
+                        System.out.println(coursedata.listStudent(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: listStudent" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "removeStudent": {
-                    System.out.println(coursedata.removeStudent(op));
+                    try {
+                        System.out.println(coursedata.removeStudent(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: removeStudent" + e.getMessage());
+                    }
                     break;
                 }
 
                 case "listCourseSchedule": {
-                    System.out.println(userdata.listCourseSchedule(op));
+                    try {
+                        System.out.println(userdata.listCourseSchedule(op));
+                    } catch (Exception e) {
+                        System.out.println("Error: listCourseSchedule" + e.getMessage());
+                    }
                     break;
                 }
 
