@@ -15,7 +15,7 @@ public class Coursedata {
     }
 
     private final static List<Course> list = new ArrayList<>();
-    public int courseId = 0;
+    public static int courseId = 0;
 
     public Course getCourse(int id) {
         return list.get(id - 1);
@@ -280,13 +280,21 @@ public class Coursedata {
             return "Illegal argument count";
         }
 
-        if(!op[1].matches("C-\\d+")) {
+        if(Userdata.getInstance().noOnline()) {
+            return "No one is online";
+        }
+
+        if(Userdata.getInstance().getCurrentUser().identity == IdentityEnum.STUDENT) {
+            return "Permission denied";
+        }
+
+        if(!op[1].matches("^C-[1-9]\\d*$")) {
             return "Illegal course id";
         }
 
         int currId = Course.splitId(op[1]);
-        if(currId > list.size()) {
-            return "Course does not exist";
+        if(currId > courseId) {
+            return "Course does not exist"; // TODO: check if this is correct
         }
         if(getCourse(currId).cancelled) {
             return "Course does not exist";
@@ -345,7 +353,7 @@ public class Coursedata {
         switch(op.length) {
             case 3: {
                 int id;
-                if(!op[2].matches("C-\\d+")) {
+                if(!op[2].matches("^C-[1-9]\\d*$")) {
                     return "Illegal course id";
                 }
                 try {
@@ -353,22 +361,20 @@ public class Coursedata {
                 } catch (NumberFormatException e) {
                     return "Illegal course id";
                 }
-                if(id > list.size()) {
-                    return "Course does not exist 354";
+                if(id > courseId) {
+                    return "Course does not exist";
                 }
                 if(getCourse(id).cancelled) {
-                    return "Course does not exist 357";
+                    return "Course does not exist";
                 }
                 if(curr.identity == IdentityEnum.TEACHER && !((Teacher) curr).courses.contains(id)) {
-                    return "Course does not exist 360";
+                    return "Course does not exist";
                 }
                 if(!getCourse(id).students.contains(currStudent.id)) {
                     return "Student does not select course";
                 }
-
                 currStudent.removeOccupation(getCourse(id).time);
-                getCourse(id).students.remove(currStudent.id);
-                currStudent.chosen.remove((Integer) id);
+                getCourse(id).students.remove(currStudent.id);currStudent.chosen.remove((Integer) id);
                 return "Remove student success";
             }
             case 2: {
@@ -382,9 +388,7 @@ public class Coursedata {
                                 continue;
                             }
                             if(c.students.contains(currStudent.id)) {
-                                currStudent.removeOccupation(c.time);
-                                coursedata.getCourse(i).students.remove(currStudent.id);
-                                currStudent.chosen.remove((Integer) i);
+                                currStudent.removeOccupation(c.time);coursedata.getCourse(i).students.remove(currStudent.id);currStudent.chosen.remove((Integer) i);
                                 suc = true;
                             }
                         }
@@ -403,7 +407,7 @@ public class Coursedata {
                             if(c.students.contains(currStudent.id)) {
                                 currStudent.removeOccupation(c.time);
                                 c.students.remove(currStudent.id);
-                                currStudent.chosen.remove(list.indexOf(c) + 1);
+                                currStudent.chosen.remove((Integer)(list.indexOf(c) + 1));
                                 suc = true;
                             }
                         }
