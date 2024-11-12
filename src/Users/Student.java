@@ -3,6 +3,7 @@ package Users;
 import Courses.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Student extends User {
@@ -46,5 +47,32 @@ public class Student extends User {
 	}
 	private static boolean idCheckDoctor(String id) {
 		return id.matches("^BY(19|2[0-4])(0[1-9]|[1-3][0-9]|4[0-3])[1-6](?!00)\\d{2}$");
+	}
+
+	public static Comparator<String> gradeOrder = (o1, o2) -> {
+
+        // Determine the type of student based on the ID prefix
+		int type1 = getType(o1);
+		int type2 = getType(o2);
+
+		// First compare by type
+		if (type1 != type2) {
+			return Integer.compare(type1, type2);
+		}
+
+		// If types are the same, compare by ID lexicographically
+		return o1.compareTo(o2);
+	};
+
+	private static int getType(String id) {
+		if (id.startsWith("ZY")) {
+			return 2; // Professional Master
+		} else if (id.startsWith("SY")) {
+			return 3; // Academic Master
+		} else if (id.startsWith("BY")) {
+			return 4; // Doctor
+		} else {
+			return 1; // Undergraduate
+		}
 	}
 }

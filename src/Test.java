@@ -82,6 +82,11 @@ public class Test {
                     break;
                 }
 
+                case "listStudent": {
+                    System.out.println(coursedata.listStudent(op));
+                    break;
+                }
+
                 default: {
                     System.out.println("Command '" + op[0] + "' not found");
                     break;

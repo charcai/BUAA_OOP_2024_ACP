@@ -247,7 +247,6 @@ public class Coursedata {
         }
         return "Output course batch success";
     }
-
     public String inputCourseBatch(String[] op) {
         if(op.length != 2) {
             return "Illegal argument count";
@@ -267,5 +266,42 @@ public class Coursedata {
             System.out.println(e);
         }
         return s;
+    }
+
+    public String listStudent(String[] op) {
+        if(op.length != 2) {
+            return "Illegal argument count";
+        }
+
+        if(!op[1].matches("C-\\d+")) {
+            return "Illegal course id";
+        }
+
+        int currId = Course.splitId(op[1]);
+        if(currId > list.size() + 1) {
+            return "Course does not exist";
+        }
+        if(getCourse(currId).cancelled) {
+            return "Course does not exist";
+        }
+        if(Userdata.getInstance().getCurrentUser().identity == IdentityEnum.TEACHER) {
+            if(!((Teacher) Userdata.getInstance().getCurrentUser()).courses.contains(currId)) {
+                return "Course does not exist";
+            }
+        }
+
+        if(getCourse(currId).students.isEmpty()) {
+            return "Student does not select course";
+        }
+
+        StringBuilder ss = new StringBuilder();
+        getCourse(currId).students.sort(Student.gradeOrder);
+
+        for(String currStu : getCourse(currId).students) {
+            Student currStudent = (Student) Userdata.getInstance().getUser(currStu);
+            ss.append(currStudent.id).append(": ").append(currStudent.getName()).append(System.lineSeparator());
+        }
+        ss.append("List student success");
+        return ss.toString();
     }
 }
